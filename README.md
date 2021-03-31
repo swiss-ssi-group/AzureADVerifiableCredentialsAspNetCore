@@ -10,3 +10,5 @@ https://didproject.azurewebsites.net/docs/credential-design.html
 
 https://github.com/Azure-Samples/active-directory-verifiable-credentials
 
+https://identity.foundation/
+
