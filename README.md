@@ -12,3 +12,4 @@ https://github.com/Azure-Samples/active-directory-verifiable-credentials
 
 https://identity.foundation/
 
+https://www.w3.org/TR/vc-data-model/
