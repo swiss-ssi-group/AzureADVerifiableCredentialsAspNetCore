@@ -2,6 +2,8 @@
 
 ## Links
 
+https://docs.microsoft.com/en-us/azure/active-directory/verifiable-credentials/
+
 https://www.microsoft.com/de-ch/security/business/identity-access-management/decentralized-identity-blockchain
 
 https://didproject.azurewebsites.net/docs/issuer-setup.html
