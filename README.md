@@ -15,3 +15,5 @@ https://github.com/Azure-Samples/active-directory-verifiable-credentials
 https://identity.foundation/
 
 https://www.w3.org/TR/vc-data-model/
+
+https://daniel-krzyczkowski.github.io/Azure-AD-Verifiable-Credentials-Intro/
