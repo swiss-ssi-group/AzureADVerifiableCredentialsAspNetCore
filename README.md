@@ -23,3 +23,5 @@ https://dotnetthoughts.net/using-node-services-in-aspnet-core/
 https://identity.foundation/ion/explorer
 
 https://www.npmjs.com/package/ngrok
+
+https://github.com/microsoft/VerifiableCredentials-Verification-SDK-Typescript
