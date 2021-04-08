@@ -1,0 +1,61 @@
+﻿@page
+@model NationalDrivingLicense.Pages.DriverLicenses.UserModel
+
+@{
+    ViewData["Title"] = "User";
+}
+
+<h3>Driver Licenses for @Model.UserName</h3>
+
+<p>
+    <a asp-page="Create" asp-route-id="@Model.UserName">Add New License</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>IssuedAt</th>
+            <th>Name</th>
+            <th>First Name</th>
+            <th>License Type</th>
+            <th>Date of Birth</th>
+            <th>Issued by</th>
+            <th>Valid</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.DriverLicense) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @item.IssuedAt.ToString("MM/dd/yyyy")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LicenseType)
+            </td>
+            <td>
+                @item.DateOfBirth.ToString("MM/dd/yyyy")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Issuedby)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Valid)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id"><i class="fa fa-edit fa-2x"></i></a>
+                <a asp-page="./Details" asp-route-id="@item.Id"><i class="fa fa-info fa-2x"></i></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
