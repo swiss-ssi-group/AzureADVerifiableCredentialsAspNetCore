@@ -2,6 +2,8 @@
 
 ## Links
 
+https://docs.microsoft.com/en-us/azure/active-directory/verifiable-credentials/
+
 https://www.microsoft.com/de-ch/security/business/identity-access-management/decentralized-identity-blockchain
 
 https://didproject.azurewebsites.net/docs/issuer-setup.html
@@ -13,3 +15,5 @@ https://github.com/Azure-Samples/active-directory-verifiable-credentials
 https://identity.foundation/
 
 https://www.w3.org/TR/vc-data-model/
+
+https://daniel-krzyczkowski.github.io/Azure-AD-Verifiable-Credentials-Intro/
