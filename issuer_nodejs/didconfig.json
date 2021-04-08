@@ -1,9 +1,0 @@
-{
-    "azTenantId": "5698af84-5720-4ff0-bdc3-9d9195314244",
-    "azClientId": "6a91e481-a7ea-4e81-9cda-792d85e306cd",
-    "azClientSecret": "S2n3xPpq_--02eG38e5.LDD10wc48VlzrX",
-    "kvVaultUri": "https://vc-kv.vault.azure.net/",
-    "kvSigningKeyId": "sig_5ad7398e",
-    "kvRemoteSigningKeyId" : "issuerSigningKeyIon-5ad7398e-25c9-5410-6a67-9eb2c3e2a9e6/66a6f96646454d8b84634e923c1442bd",
-    "did": "did:ion:EiDX4v56BF-sM8LluNfjxbAgzOgtM-ERfTlmLmxGOxA-FA:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJzaWdfNWFkNzM5OGUiLCJwdWJsaWNLZXlKd2siOnsiY3J2Ijoic2VjcDI1NmsxIiwia3R5IjoiRUMiLCJ4IjoiY2N6OU5PeWNOa3dVcHp5VzZaZ1BaaHV2NTRfeXJHSnVBNzZvYUNQYlRPVSIsInkiOiI2WnNuSkRSYk1PcUlmMldtWDBzUjA4UmhKRWtNQTROdGZYWlRFdUFlcl9JIn0sInB1cnBvc2VzIjpbImF1dGhlbnRpY2F0aW9uIiwiYXNzZXJ0aW9uTWV0aG9kIl0sInR5cGUiOiJFY2RzYVNlY3AyNTZrMVZlcmlmaWNhdGlvbktleTIwMTkifV0sInNlcnZpY2VzIjpbeyJpZCI6ImxpbmtlZGRvbWFpbnMiLCJzZXJ2aWNlRW5kcG9pbnQiOnsib3JpZ2lucyI6WyJodHRwczovL2RhbWllbmJvZC5jb20vIl19LCJ0eXBlIjoiTGlua2VkRG9tYWlucyJ9XX19XSwidXBkYXRlQ29tbWl0bWVudCI6IkVpQk9vTkV6U21zc2dfdVZKYkJpT0EtN2pvLUEwc0ktSGhOYXJNQ3I4dk1aRncifSwic3VmZml4RGF0YSI6eyJkZWx0YUhhc2giOiJFaURnQ0dMYkpXcGkxNHdIX2JFNVZkbjRYSmNqQ2RLZUgwYmRnSW05VjhNREJnIiwicmVjb3ZlcnlDb21taXRtZW50IjoiRWlBdmxXQ0xnSEdqcDRPcDU2NzFBZEw0RTVjb2pqcmphSHRBQWF0U3RVQkw3QSJ9fQ"
-}
