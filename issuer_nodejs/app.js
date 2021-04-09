@@ -85,9 +85,11 @@ app.get('/issue-request', async (req, res) => {
   // using the verifiable credential issuer service
   const requestBuilder = new RequestorBuilder({
     presentationDefinition: {
+	  name: 'Get drivers license',
+	  purpose: 'drving license vc',
       input_descriptors: [
         {
-          id: "expert",
+          id: "ndl",
           schema: {
             uri: credentialType,
           },
