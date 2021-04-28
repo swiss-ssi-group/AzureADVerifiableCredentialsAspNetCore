@@ -17,3 +17,7 @@ https://identity.foundation/
 https://www.w3.org/TR/vc-data-model/
 
 https://daniel-krzyczkowski.github.io/Azure-AD-Verifiable-Credentials-Intro/
+
+https://docs.microsoft.com/en-us/azure/active-directory-b2c/custom-policy-overview
+
+https://didproject.azurewebsites.net/docs/idp-claims.html
