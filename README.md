@@ -21,3 +21,5 @@ https://daniel-krzyczkowski.github.io/Azure-AD-Verifiable-Credentials-Intro/
 https://docs.microsoft.com/en-us/azure/active-directory-b2c/custom-policy-overview
 
 https://didproject.azurewebsites.net/docs/idp-claims.html
+
+https://www.xtseminars.co.uk/post/issuing-dids-and-vcs-with-the-microsoft-example-app-and-authenticator
