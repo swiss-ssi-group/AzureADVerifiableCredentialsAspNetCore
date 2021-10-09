@@ -18,7 +18,14 @@ https://www.w3.org/TR/vc-data-model/
 
 https://daniel-krzyczkowski.github.io/Azure-AD-Verifiable-Credentials-Intro/
 
+
 https://dotnetthoughts.net/using-node-services-in-aspnet-core/
+
+https://identity.foundation/ion/explorer
+
+https://www.npmjs.com/package/ngrok
+
+https://github.com/microsoft/VerifiableCredentials-Verification-SDK-Typescript
 
 https://identity.foundation/ion/explorer
 
