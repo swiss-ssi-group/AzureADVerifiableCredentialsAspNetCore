@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:4000",
-      "sslPort": 44380
+      "applicationUrl": "https://localhost:44398",
+      "sslPort": 44398
     }
   },
   "profiles": {
@@ -15,13 +15,13 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Verifiable_credentials_DotNet": {
+    "asp-net-core-api-idtokenhint": {
       "commandName": "Project",
       "launchBrowser": true,
+      "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "PRODHoekstra"
-      },
-      "applicationUrl": "http://0.0.0.0:3000"
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   }
 }
