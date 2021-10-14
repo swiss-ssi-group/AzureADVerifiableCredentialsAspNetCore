@@ -126,18 +126,15 @@ namespace Verifiable_credentials_DotNet
                 //get the manifest from the appsettings, this is the URL to the credential created in the azure portal. 
                 //the display and rules file to create the credential can be dound in the credentialfiles directory
                 //make sure the credentialtype in the issuance payload matches with the rules file
-                //for this sample it should be VCNationalDrivingLicense
+                //for this sample it should be driving
                 if (payload["issuance"]["manifest"] != null)
                 {
                     payload["issuance"]["manifest"] = AppSettings.CredentialManifest;
                 }
 
                 //here you could change the payload manifest and change the firstname and lastname
-                payload["issuance"]["claims"]["issuedat"] = "2021-10-11";
-                payload["issuance"]["claims"]["name"] = "Bowen";
-                payload["issuance"]["claims"]["firstname"] = "Tim";
-                payload["issuance"]["claims"]["dateofbirth"] = "1973-05-23";
-                payload["issuance"]["claims"]["licensetype"] = "B";
+                payload["issuance"]["claims"]["given_name"] = "Tim Maher";
+                payload["issuance"]["claims"]["family_name"] = "Licence Types B";
 
                 jsonString = JsonConvert.SerializeObject(payload);
 
