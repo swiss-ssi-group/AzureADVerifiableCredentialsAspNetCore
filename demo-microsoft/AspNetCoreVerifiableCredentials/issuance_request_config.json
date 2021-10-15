@@ -4,7 +4,7 @@
     //In this sample code we will overwrite the callback and use the HOSTNAME dynamicall
     //make sure you use ngrok or something like that when running on a local devbox. 
     //The MS AAD VC Request service needs to be able to reach the callback URI
-    "url": "https://b121f9d3c2fb.ngrok.io/api/issuer/issuanceCallback",
+    "url": "https://YOURPUBLICREACHABLEHOSTNAME/api/issuer/issuanceCallback",
     "state": "STATEWILLBESETINCODE",
     "headers": {
       "api-key": "OPTIONAL API-KEY for ISSUANCE CALLBACK API"

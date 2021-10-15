@@ -112,20 +112,23 @@ namespace IssuerDrivingLicense
         public async Task<IssuanceRequestPayload> GetIssuanceRequestPayloadAsync(HttpRequest request, HttpContext context)
         {
             var payload = new IssuanceRequestPayload();
-            payload.Issuance.Pin.Length = 4;
-            var pinMaxValue = (int)Math.Pow(10, payload.Issuance.Pin.Length) - 1;
+            var length = 4;
+            var pinMaxValue = (int)Math.Pow(10, length) - 1;
             var randomNumber = RandomNumberGenerator.GetInt32(1, pinMaxValue);
-            var newpin = string.Format("{0:D" + payload.Issuance.Pin.Length.ToString() + "}", randomNumber);
-            payload.Issuance.Pin.Value = newpin;
+            var newpin = string.Format("{0:D" + length.ToString() + "}", randomNumber);
 
-            payload.Callback.State = Guid.NewGuid().ToString();
+            payload.Issuance.Pin.Length = 4;
+            payload.Issuance.Pin.Value = newpin;
+            payload.Issuance.CredentialsType = "MyDrivingLicense";
+            payload.Issuance.Manifest = _credentialSettings.CredentialManifest;
+
             var host = GetRequestHostName(request);
-            payload.Callback.Url = String.Format("{0}/api/issuer/issuanceCallback", host);
+            payload.Callback.State = Guid.NewGuid().ToString();
+            payload.Callback.Url = string.Format("{0}:/api/issuer/issuanceCallback", host);
+            payload.Callback.Headers.ApiKey = "OPTIONAL API-KEY for ISSUANCE CALLBACK API";
 
             payload.Registration.ClientName = "Verifiable Credential NDL Sample";
             payload.Authority = _credentialSettings.IssuerAuthority;
-            payload.Issuance.CredentialsType = "MyDrivingLicense";
-            payload.Issuance.Manifest = _credentialSettings.CredentialManifest;
 
             var driverLicense = await _driverLicenseService.GetDriverLicense(context.User.Identity.Name);
 
