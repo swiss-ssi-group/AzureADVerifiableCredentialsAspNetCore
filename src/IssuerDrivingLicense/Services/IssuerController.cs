@@ -7,6 +7,7 @@ using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics;
 using System.Net.Http.Headers;
+using IssuerDrivingLicense.Services;
 
 namespace IssuerDrivingLicense
 {
@@ -59,31 +60,36 @@ namespace IssuerDrivingLicense
                     HttpResponseMessage res = await client.PostAsJsonAsync(
                         _credentialSettings.ApiEndpoint, payload);
 
-                    var response = await res.Content.ReadAsStringAsync();
+                    var response = await res.Content.ReadFromJsonAsync<IssuanceResponse>();
+
+                    if(response == null)
+                    {
+                        return BadRequest(new { error = "400", error_description = "no response from VC API"});
+                    }
 
                     client.Dispose();
 
                     if (res.StatusCode == HttpStatusCode.Created)
                     {
                         _log.LogTrace("succesfully called Request API");
-                        JObject requestConfig = JObject.Parse(response);
+             
                         if (payload.Issuance.Pin.Value != null) 
-                        { 
-                            requestConfig["pin"] = payload.Issuance.Pin.Value; 
+                        {
+                            response.Pin = payload.Issuance.Pin.Value; 
                         
                         }
-                        requestConfig.Add(new JProperty("id", payload.Callback.State));
-                        var resJsonString = JsonConvert.SerializeObject(requestConfig);
 
+                        response.Id = payload.Callback.State;
+       
                         var cacheData = new
                         {
                             status = "notscanned",
                             message = "Request ready, please scan with Authenticator",
-                            expiry = requestConfig["expiry"].ToString()
+                            expiry = response.Expiry.ToString()
                         };
                         _cache.Set(payload.Callback.State, JsonConvert.SerializeObject(cacheData));
 
-                        return new ContentResult { ContentType = "application/json", Content = resJsonString };
+                        return Ok(response);
                     }
                     else
                     {
