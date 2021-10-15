@@ -1,16 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Net;
 using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.Identity.Client;
 using System.Net.Http.Headers;
-using Microsoft.Identity.Web;
 
 namespace IssuerDrivingLicense
 {
@@ -48,99 +44,8 @@ namespace IssuerDrivingLicense
         {
             try
             {
-                //they payload template is loaded from disk and modified in the code below to make it easier to get started
-                //and having all config in a central location appsettings.json. 
-                //if you want to manually change the payload in the json file make sure you comment out the code below which will modify it automatically
-                //
-                string jsonString = null;
-                string newpin = null;
-
-                string payloadpath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), ISSUANCEPAYLOAD);
-                _log.LogTrace("IssuanceRequest file: {0}", payloadpath);
-                if (!System.IO.File.Exists(payloadpath))
-                {
-                    _log.LogError("File not found: {0}", payloadpath);
-                    return BadRequest(new { error = "400", error_description = ISSUANCEPAYLOAD + " not found" });
-                }
-                jsonString = System.IO.File.ReadAllText(payloadpath);
-                if (string.IsNullOrEmpty(jsonString))
-                {
-                    _log.LogError("Error reading file: {0}", payloadpath);
-                    return BadRequest(new { error = "400", error_description = ISSUANCEPAYLOAD + " error reading file" });
-                }
-
-                //check if pin is required, if found make sure we set a new random pin
-                //pincode is only used when the payload contains claim value pairs which results in an IDTokenhint
-                JObject payload = JObject.Parse(jsonString);
-                //payload["issuance"]["pin"].Parent.Remove();
-                if (payload["issuance"]["pin"] != null)
-                {
-                    if (_issuerService.IsMobile(Request))
-                    {
-                        _log.LogTrace("pin element found in JSON payload, but on mobile so remove pin since we will be using deeplinking");
-                        //consider providing the PIN through other means to your user instead of removing it.
-                        payload["issuance"]["pin"].Parent.Remove();
-
-                    }
-                    else
-                    {
-                        _log.LogTrace("pin element found in JSON payload, modifying to a random number of the specific length");
-                        var length = (int)payload["issuance"]["pin"]["length"];
-                        var pinMaxValue = (int)Math.Pow(10, length) - 1;
-                        var randomNumber = RandomNumberGenerator.GetInt32(1, pinMaxValue);
-                        newpin = string.Format("{0:D" + length.ToString() + "}", randomNumber);
-                        payload["issuance"]["pin"]["value"] = newpin;
-                    }
-
-                }
-
-                string state = Guid.NewGuid().ToString();
-
-                //modify payload with new state, the state is used to be able to update the UI when callbacks are received from the VC Service
-                if (payload["callback"]["state"] != null)
-                {
-                    payload["callback"]["state"] = state;
-                }
-
-                //get the IssuerDID from the appsettings
-                if (payload["authority"] != null)
-                {
-                    payload["authority"] = _credentialSettings.IssuerAuthority;
-                }
-
-                //modify the callback method to make it easier to debug 
-                //with tools like ngrok since the URI changes all the time
-                //this way you don't need to modify the callback URL in the payload every time
-                //ngrok changes the URI
-
-                if (payload["callback"]["url"] != null)
-                {
-                    //localhost hostname can't work for callbacks so we won't overwrite it.
-                    //this happens for example when testing with sign-in to an IDP and https://localhost is used as redirect URI
-                    //in that case the callback should be configured in the payload directly instead of being modified in the code here
-                    string host = _issuerService.GetRequestHostName(Request);
-                    if (!host.Contains("//localhost"))
-                    {
-                        payload["callback"]["url"] = String.Format("{0}:/api/issuer/issuanceCallback", host);
-                    }
-                }
-
-                //get the manifest from the appsettings, this is the URL to the credential created in the azure portal. 
-                //the display and rules file to create the credential can be dound in the credentialfiles directory
-                //make sure the credentialtype in the issuance payload matches with the rules file
-                //for this sample it should be driving
-                if (payload["issuance"]["manifest"] != null)
-                {
-                    payload["issuance"]["manifest"] = _credentialSettings.CredentialManifest;
-                }
-
-                var driverLicense = await _driverLicenseService.GetDriverLicense(HttpContext.User.Identity.Name);
-
-                //here you could change the payload manifest and change the firstname and lastname
-                payload["issuance"]["claims"]["given_name"] = $"{driverLicense.FirstName} {driverLicense.Name}  {driverLicense.UserName}";
-                payload["issuance"]["claims"]["family_name"] = $"Type: {driverLicense.LicenseType} IssuedAt: {driverLicense.IssuedAt.ToString("yyyy-MM-dd")}";
-
-                jsonString = JsonConvert.SerializeObject(payload);
+                var payload = await _issuerService.GetIssuanceRequestPayloadAsync(Request, HttpContext);
+                var jsonString = JsonConvert.SerializeObject(payload);
 
                 //CALL REST API WITH PAYLOAD
                 HttpStatusCode statusCode = HttpStatusCode.OK;
@@ -157,7 +62,6 @@ namespace IssuerDrivingLicense
                         return BadRequest(new { error = accessToken.error, error_description = accessToken.error_description });
                     }
 
-
                     HttpClient client = new HttpClient();
                     var defaultRequestHeaders = client.DefaultRequestHeaders;
                     defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.token);
@@ -171,8 +75,8 @@ namespace IssuerDrivingLicense
                     {
                         _log.LogTrace("succesfully called Request API");
                         JObject requestConfig = JObject.Parse(response);
-                        if (newpin != null) { requestConfig["pin"] = newpin; }
-                        requestConfig.Add(new JProperty("id", state));
+                        if (payload.Issuance.Pin.Value != null) { requestConfig["pin"] = payload.Issuance.Pin.Value; }
+                        requestConfig.Add(new JProperty("id", payload.Callback.State));
                         jsonString = JsonConvert.SerializeObject(requestConfig);
 
                         //We use in memory cache to keep state about the request. The UI will check the state when calling the presentationResponse method
@@ -183,7 +87,7 @@ namespace IssuerDrivingLicense
                             message = "Request ready, please scan with Authenticator",
                             expiry = requestConfig["expiry"].ToString()
                         };
-                        _cache.Set(state, JsonConvert.SerializeObject(cacheData));
+                        _cache.Set(payload.Callback.State, JsonConvert.SerializeObject(cacheData));
 
                         return new ContentResult { ContentType = "application/json", Content = jsonString };
                     }
@@ -192,7 +96,6 @@ namespace IssuerDrivingLicense
                         _log.LogError("Unsuccesfully called Request API");
                         return BadRequest(new { error = "400", error_description = "Something went wrong calling the API: " + response });
                     }
-
                 }
                 catch (Exception ex)
                 {

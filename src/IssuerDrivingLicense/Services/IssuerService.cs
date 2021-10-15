@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using IssuerDrivingLicense.Services;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Web;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
 namespace IssuerDrivingLicense
@@ -107,6 +109,34 @@ namespace IssuerDrivingLicense
                 return true;
             else
                 return false;
+        }
+
+        public async Task<IssuanceRequestPayload> GetIssuanceRequestPayloadAsync(HttpRequest request, HttpContext context)
+        {
+            var payload = new IssuanceRequestPayload();
+            payload.Issuance.Pin.Length = 4;
+            var pinMaxValue = (int)Math.Pow(10, payload.Issuance.Pin.Length) - 1;
+            var randomNumber = RandomNumberGenerator.GetInt32(1, pinMaxValue);
+            var newpin = string.Format("{0:D" + payload.Issuance.Pin.Length.ToString() + "}", randomNumber);
+            payload.Issuance.Pin.Value = newpin;
+
+            payload.Callback.State = Guid.NewGuid().ToString();
+            var host = GetRequestHostName(request);
+            if (!host.Contains("//localhost"))
+            {
+                payload.Callback.Url = String.Format("{0}:/api/issuer/issuanceCallback", host);
+            }
+
+            payload.Authority = _credentialSettings.IssuerAuthority;
+            payload.Issuance.CredentialsType = "MyDrivingLicense";
+            payload.Issuance.Manifest = _credentialSettings.CredentialManifest;
+
+            var driverLicense = await _driverLicenseService.GetDriverLicense(context.User.Identity.Name);
+
+            payload.Issuance.Claims.Name = $"{driverLicense.FirstName} {driverLicense.Name}  {driverLicense.UserName}";
+            payload.Issuance.Claims.Details = $"Type: {driverLicense.LicenseType} IssuedAt: {driverLicense.IssuedAt.ToString("yyyy-MM-dd")}";
+
+            return payload;
         }
     }
 }
