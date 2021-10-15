@@ -116,9 +116,6 @@ namespace IssuerDrivingLicense
         {
             try
             {
-                //string content = await new System.IO.StreamReader(Request.Body).ReadToEndAsync();
-                //_log.LogTrace("callback!: " + content);
-                //JObject issuanceResponse = JObject.Parse(content);
                 var state = issuanceResponse.State;
 
                 //there are 2 different callbacks. 1 if the QR code is scanned (or deeplink has been followed)
@@ -136,9 +133,6 @@ namespace IssuerDrivingLicense
                     _cache.Set(state, JsonConvert.SerializeObject(cacheData));
                 }
 
-                //
-                //This callback is called when issuance is completed.
-                //
                 if (issuanceResponse.Code == "issuance_successful")
                 {
                     var cacheData = new
@@ -148,9 +142,7 @@ namespace IssuerDrivingLicense
                     };
                     _cache.Set(state, JsonConvert.SerializeObject(cacheData));
                 }
-                //
-                //We capture if something goes wrong during issuance. See documentation with the different error codes
-                //
+
                 if (issuanceResponse.Code == "issuance_error")
                 {
                     var cacheData = new
