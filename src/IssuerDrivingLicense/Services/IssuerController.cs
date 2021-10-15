@@ -112,12 +112,12 @@ namespace IssuerDrivingLicense
         /// This method is called by the VC Request API when the user scans a QR code and accepts the issued Verifiable Credential
         /// </summary>
         /// <returns></returns>
-        [HttpPost]
-        public ActionResult IssuanceCallback()
+        [HttpPost("/api/issuer/issuanceCallback")]
+        public async Task<ActionResult> IssuanceCallback()
         {
             try
             {
-                string content = new System.IO.StreamReader(Request.Body).ReadToEndAsync().Result;
+                string content = await new System.IO.StreamReader(Request.Body).ReadToEndAsync();
                 _log.LogTrace("callback!: " + content);
                 JObject issuanceResponse = JObject.Parse(content);
                 var state = issuanceResponse["state"].ToString();
