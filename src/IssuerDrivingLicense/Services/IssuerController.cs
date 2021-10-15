@@ -74,14 +74,13 @@ namespace IssuerDrivingLicense
                         if (payload.Issuance.Pin.Value != null) 
                         {
                             response.Pin = payload.Issuance.Pin.Value; 
-                        
                         }
 
                         response.Id = payload.Callback.State;
        
                         var cacheData = new
                         {
-                            status = "notscanned",
+                            status = IssuanceConst.NotScanned,
                             message = "Request ready, please scan with Authenticator",
                             expiry = response.Expiry.ToString()
                         };
@@ -116,45 +115,42 @@ namespace IssuerDrivingLicense
         {
             try
             {
-                var state = issuanceResponse.State;
-
                 //there are 2 different callbacks. 1 if the QR code is scanned (or deeplink has been followed)
                 //Scanning the QR code makes Authenticator download the specific request from the server
                 //the request will be deleted from the server immediately.
                 //That's why it is so important to capture this callback and relay this to the UI so the UI can hide
                 //the QR code to prevent the user from scanning it twice (resulting in an error since the request is already deleted)
-                if (issuanceResponse.Code == "request_retrieved")
+                if (issuanceResponse.Code == IssuanceConst.RequestRetrieved)
                 {
                     var cacheData = new
                     {
-                        status = "request_retrieved",
+                        status = IssuanceConst.RequestRetrieved,
                         message = "QR Code is scanned. Waiting for issuance...",
                     };
-                    _cache.Set(state, JsonConvert.SerializeObject(cacheData));
+                    _cache.Set(issuanceResponse.State, JsonConvert.SerializeObject(cacheData));
                 }
 
-                if (issuanceResponse.Code == "issuance_successful")
+                if (issuanceResponse.Code == IssuanceConst.IssuanceSuccessful)
                 {
                     var cacheData = new
                     {
-                        status = "issuance_successful",
+                        status = IssuanceConst.IssuanceSuccessful,
                         message = "Credential successfully issued",
                     };
-                    _cache.Set(state, JsonConvert.SerializeObject(cacheData));
+                    _cache.Set(issuanceResponse.State, JsonConvert.SerializeObject(cacheData));
                 }
 
-                if (issuanceResponse.Code == "issuance_error")
+                if (issuanceResponse.Code == IssuanceConst.IssuanceError)
                 {
                     var cacheData = new
                     {
-                        status = "issuance_error",
+                        status = IssuanceConst.IssuanceError,
                         payload = issuanceResponse.Error?.Code,
                         //at the moment there isn't a specific error for incorrect entry of a pincode.
                         //So assume this error happens when the users entered the incorrect pincode and ask to try again.
                         message = issuanceResponse.Error?.Message
-
                     };
-                    _cache.Set(state, JsonConvert.SerializeObject(cacheData));
+                    _cache.Set(issuanceResponse.State, JsonConvert.SerializeObject(cacheData));
                 }
 
                 return new OkResult();
