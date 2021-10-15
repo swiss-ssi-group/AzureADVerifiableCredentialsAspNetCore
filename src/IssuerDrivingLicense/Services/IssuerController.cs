@@ -23,12 +23,17 @@ namespace IssuerDrivingLicense
         protected readonly CredentialSettings _credentialSettings;
         protected IMemoryCache _cache;
         protected readonly ILogger<IssuerController> _log;
+        private readonly DriverLicenseService _driverLicenseService;
 
-        public IssuerController(IOptions<CredentialSettings> credentialSettings, IMemoryCache memoryCache, ILogger<IssuerController> log)
+        public IssuerController(IOptions<CredentialSettings> credentialSettings, 
+            IMemoryCache memoryCache, 
+            ILogger<IssuerController> log,
+            DriverLicenseService driverLicenseService)
         {
             _credentialSettings = credentialSettings.Value;
             _cache = memoryCache;
             _log = log;
+            _driverLicenseService = driverLicenseService;
         }
 
         /// <summary>
@@ -36,7 +41,7 @@ namespace IssuerDrivingLicense
         /// </summary>
         /// <returns>JSON object with the address to the presentation request and optionally a QR code and a state value which can be used to check on the response status</returns>
         [HttpGet("/api/issuer/issuance-request")]
-        public ActionResult IssuanceRequest()
+        public async Task<ActionResult> IssuanceRequestAsync()
         {
             try
             {
@@ -126,9 +131,11 @@ namespace IssuerDrivingLicense
                     payload["issuance"]["manifest"] = _credentialSettings.CredentialManifest;
                 }
 
+                var driverLicense = await _driverLicenseService.GetDriverLicense(HttpContext.User.Identity.Name);
+
                 //here you could change the payload manifest and change the firstname and lastname
-                payload["issuance"]["claims"]["given_name"] = "Tim Maher";
-                payload["issuance"]["claims"]["family_name"] = "Licence Types B";
+                payload["issuance"]["claims"]["given_name"] = $"{driverLicense.FirstName} {driverLicense.Name}  {driverLicense.UserName}";
+                payload["issuance"]["claims"]["family_name"] = $"Type: {driverLicense.LicenseType} IssuedAt: {driverLicense.IssuedAt}";
 
                 jsonString = JsonConvert.SerializeObject(payload);
 
