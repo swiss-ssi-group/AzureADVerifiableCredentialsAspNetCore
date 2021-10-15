@@ -11,7 +11,7 @@ namespace IssuerDrivingLicense.Services
         [JsonPropertyName("authority")]
         public string Authority { get; set; } = string.Empty;
         [JsonPropertyName("registration")]
-        public Registration Registration { get; set; }
+        public Registration Registration { get; set; } = new Registration();
         [JsonPropertyName("issuance")]
         public Issuance Issuance { get; set; } = new Issuance();
     }

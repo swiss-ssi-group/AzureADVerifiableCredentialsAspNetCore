@@ -10,16 +10,14 @@ namespace IssuerDrivingLicense
 {
     public class IssuerService
     {
-        const string ISSUANCEPAYLOAD = "issuance_request_config.json";
-
         protected readonly CredentialSettings _credentialSettings;
         protected IMemoryCache _cache;
-        protected readonly ILogger<IssuerController> _log;
+        protected readonly ILogger<IssuerService> _log;
         private readonly DriverLicenseService _driverLicenseService;
 
         public IssuerService(IOptions<CredentialSettings> credentialSettings,
             IMemoryCache memoryCache,
-            ILogger<IssuerController> log,
+            ILogger<IssuerService> log,
             DriverLicenseService driverLicenseService)
         {
             _credentialSettings = credentialSettings.Value;
@@ -28,7 +26,7 @@ namespace IssuerDrivingLicense
             _driverLicenseService = driverLicenseService;
         }
 
-        public async Task<(string token, string error, string error_description)> GetAccessToken()
+        public async Task<(string Token, string Error, string ErrorDescription)> GetAccessToken()
         {
 
             // You can run this sample using ClientSecret or Certificate. The code will differ only when instantiating the IConfidentialClientApplication
@@ -64,7 +62,7 @@ namespace IssuerDrivingLicense
             // With client credentials flows the scopes is ALWAYS of the shape "resource/.default", as the 
             // application permissions need to be set statically (in the portal or by PowerShell), and then granted by
             // a tenant administrator. 
-            string[] scopes = new string[] { _credentialSettings.VCServiceScope };
+            var scopes = new string[] { _credentialSettings.VCServiceScope };
 
             AuthenticationResult result = null;
             try
@@ -87,7 +85,7 @@ namespace IssuerDrivingLicense
             }
 
             _log.LogTrace(result.AccessToken);
-            return (result.AccessToken, String.Empty, String.Empty);
+            return (result.AccessToken, string.Empty, string.Empty);
         }
 
         public string GetRequestHostName(HttpRequest request)
@@ -122,11 +120,9 @@ namespace IssuerDrivingLicense
 
             payload.Callback.State = Guid.NewGuid().ToString();
             var host = GetRequestHostName(request);
-            if (!host.Contains("//localhost"))
-            {
-                payload.Callback.Url = String.Format("{0}:/api/issuer/issuanceCallback", host);
-            }
+            payload.Callback.Url = String.Format("{0}:/api/issuer/issuanceCallback", host);
 
+            payload.Registration.ClientName = "Verifiable Credential NDL Sample";
             payload.Authority = _credentialSettings.IssuerAuthority;
             payload.Issuance.CredentialsType = "MyDrivingLicense";
             payload.Issuance.Manifest = _credentialSettings.CredentialManifest;

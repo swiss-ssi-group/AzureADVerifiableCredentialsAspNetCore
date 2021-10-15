@@ -19,19 +19,16 @@ namespace IssuerDrivingLicense
         protected readonly CredentialSettings _credentialSettings;
         protected IMemoryCache _cache;
         protected readonly ILogger<IssuerController> _log;
-        private readonly DriverLicenseService _driverLicenseService;
         private readonly IssuerService _issuerService;
 
         public IssuerController(IOptions<CredentialSettings> credentialSettings, 
             IMemoryCache memoryCache, 
             ILogger<IssuerController> log,
-            DriverLicenseService driverLicenseService,
             IssuerService issuerService)
         {
             _credentialSettings = credentialSettings.Value;
             _cache = memoryCache;
             _log = log;
-            _driverLicenseService = driverLicenseService;
             _issuerService = issuerService;
         }
 
@@ -45,41 +42,38 @@ namespace IssuerDrivingLicense
             try
             {
                 var payload = await _issuerService.GetIssuanceRequestPayloadAsync(Request, HttpContext);
-                var jsonString = JsonConvert.SerializeObject(payload);
-
-                //CALL REST API WITH PAYLOAD
-                HttpStatusCode statusCode = HttpStatusCode.OK;
-                string response = null;
 
                 try
                 {
-                    //The VC Request API is an authenticated API. We need to clientid and secret (or certificate) to create an access token which 
-                    //needs to be send as bearer to the VC Request API
-                    var accessToken = await _issuerService.GetAccessToken();
-                    if (accessToken.Item1 == String.Empty)
+                    var (Token, Error, ErrorDescription) = await _issuerService.GetAccessToken();
+                    if (string.IsNullOrEmpty(Token))
                     {
-                        _log.LogError(String.Format("failed to acquire accesstoken: {0} : {1}"), accessToken.error, accessToken.error_description);
-                        return BadRequest(new { error = accessToken.error, error_description = accessToken.error_description });
+                        _log.LogError(string.Format("failed to acquire accesstoken: {0} : {1}"), Error, ErrorDescription);
+                        return BadRequest(new { error = Error, error_description = ErrorDescription });
                     }
 
-                    HttpClient client = new HttpClient();
+                    HttpClient client = new();
                     var defaultRequestHeaders = client.DefaultRequestHeaders;
-                    defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.token);
+                    defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
 
-                    HttpResponseMessage res = client.PostAsync(_credentialSettings.ApiEndpoint, new StringContent(jsonString, Encoding.UTF8, "application/json")).Result;
-                    response = res.Content.ReadAsStringAsync().Result;
+                    HttpResponseMessage res = await client.PostAsJsonAsync(
+                        _credentialSettings.ApiEndpoint, payload);
+
+                    var response = await res.Content.ReadAsStringAsync();
+
                     client.Dispose();
-                    statusCode = res.StatusCode;
 
-                    if (statusCode == HttpStatusCode.Created)
+                    if (res.StatusCode == HttpStatusCode.Created)
                     {
                         _log.LogTrace("succesfully called Request API");
                         JObject requestConfig = JObject.Parse(response);
-                        if (payload.Issuance.Pin.Value != null) { requestConfig["pin"] = payload.Issuance.Pin.Value; }
+                        if (payload.Issuance.Pin.Value != null) 
+                        { 
+                            requestConfig["pin"] = payload.Issuance.Pin.Value; 
+                        
+                        }
                         requestConfig.Add(new JProperty("id", payload.Callback.State));
-                        jsonString = JsonConvert.SerializeObject(requestConfig);
-
-                        //We use in memory cache to keep state about the request. The UI will check the state when calling the presentationResponse method
+                        var resJsonString = JsonConvert.SerializeObject(requestConfig);
 
                         var cacheData = new
                         {
@@ -89,7 +83,7 @@ namespace IssuerDrivingLicense
                         };
                         _cache.Set(payload.Callback.State, JsonConvert.SerializeObject(cacheData));
 
-                        return new ContentResult { ContentType = "application/json", Content = jsonString };
+                        return new ContentResult { ContentType = "application/json", Content = resJsonString };
                     }
                     else
                     {
