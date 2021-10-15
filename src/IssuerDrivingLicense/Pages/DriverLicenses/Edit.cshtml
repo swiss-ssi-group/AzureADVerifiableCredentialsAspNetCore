@@ -12,9 +12,9 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="DriverLicense.Id" />
-            <input type="hidden" value="@Model.DriverLicense.UserName" />
-            <input type="hidden" value="@Model.DriverLicense.Name" />
-            <input type="hidden" value="@Model.DriverLicense.FirstName" />
+            <input type="hidden" asp-for="DriverLicense.UserName" />
+            <input type="hidden" asp-for="DriverLicense.Name" />
+            <input type="hidden" asp-for="DriverLicense.FirstName" />
 
             <div class="form-group">
                 <label class="control-label">@Model.DriverLicense.UserName</label>
