@@ -8,7 +8,6 @@ namespace IssuerDrivingLicense.Pages.DriverLicenses
     {
         private readonly DrivingLicenseDbContext _context;
 
-        [FromQuery(Name = "id")]
         public string UserName { get; set; }
 
         [BindProperty]
@@ -19,14 +18,8 @@ namespace IssuerDrivingLicense.Pages.DriverLicenses
             _context = context;
         }
 
-        public IActionResult OnGet(string id)
+        public IActionResult OnGet()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            UserName = id;
-
             return Page();
         }
 

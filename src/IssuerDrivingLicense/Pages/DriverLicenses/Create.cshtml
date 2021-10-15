@@ -5,14 +5,17 @@
     ViewData["Title"] = "Create";
 }
 
-<h3>Create Driver Licence for @Model.UserName</h3>
+<h3>Create Driver Licence</h3>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="DriverLicense.UserName" value="@Model.UserName" />
-            <input type="hidden" value="@Model.UserName" />
+             <div class="form-group">
+                <label class="control-label">UserName</label>
+                <input asp-for="DriverLicense.UserName" class="form-control" />
+                <span asp-validation-for="DriverLicense.UserName" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label class="control-label">Name</label>
                 <input asp-for="DriverLicense.Name" class="form-control" />

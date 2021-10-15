@@ -12,14 +12,15 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="DriverLicense.Id" />
+            <input type="hidden" value="@Model.DriverLicense.UserName" />
+            <input type="hidden" value="@Model.DriverLicense.Name" />
+            <input type="hidden" value="@Model.DriverLicense.FirstName" />
+
             <div class="form-group">
                 <label class="control-label">@Model.DriverLicense.UserName</label>
-                <input type="hidden" value="@Model.DriverLicense.UserName" />
             </div>
             <div class="form-group">
-                <label class="control-label">@Model.DriverLicense.FirstName @Model.DriverLicense.Name</label>
-                <input type="hidden" value="@Model.DriverLicense.Name" />
-                <input type="hidden" value="@Model.DriverLicense.FirstName" />
+                <label class="control-label">@Model.DriverLicense.FirstName @Model.DriverLicense.Name</label>  
             </div>
             <div class="form-group">
                 <div class="checkbox">
