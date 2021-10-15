@@ -18,7 +18,7 @@ namespace IssuerDrivingLicense
         protected IMemoryCache _cache;
         protected readonly ILogger<IssuerController> _log;
         private readonly IssuerService _issuerService;
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
         public IssuerController(IOptions<CredentialSettings> credentialSettings, 
             IMemoryCache memoryCache, 
@@ -43,13 +43,12 @@ namespace IssuerDrivingLicense
             try
             {
                 var payload = await _issuerService.GetIssuanceRequestPayloadAsync(Request, HttpContext);
-                var ddd  = System.Text.Json.JsonSerializer.Serialize(payload);
                 try
                 {
                     var (Token, Error, ErrorDescription) = await _issuerService.GetAccessToken();
                     if (string.IsNullOrEmpty(Token))
                     {
-                        _log.LogError(string.Format("failed to acquire accesstoken: {0} : {1}"), Error, ErrorDescription);
+                        _log.LogError($"failed to acquire accesstoken: {Error} : {ErrorDescription}");
                         return BadRequest(new { error = Error, error_description = ErrorDescription });
                     }
 
@@ -181,7 +180,7 @@ namespace IssuerDrivingLicense
                 if (_cache.TryGetValue(state, out string buf))
                 {
                     value = JsonSerializer.Deserialize<CacheData>(buf);
-
+                    
                     Debug.WriteLine("check if there was a response yet: " + value);
                     return new ContentResult { ContentType = "application/json", Content = JsonSerializer.Serialize(value) };
                 }

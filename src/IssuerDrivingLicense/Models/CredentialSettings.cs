@@ -113,8 +113,8 @@ namespace IssuerDrivingLicense
             {
                 throw new ArgumentException("certificateName should not be empty. Please set the CertificateName setting in the appsettings.json", "certificateName");
             }
-            CertificateDescription certificateDescription = CertificateDescription.FromStoreWithDistinguishedName(certificateName);
-            DefaultCertificateLoader defaultCertificateLoader = new DefaultCertificateLoader();
+            var certificateDescription = CertificateDescription.FromStoreWithDistinguishedName(certificateName);
+            var defaultCertificateLoader = new DefaultCertificateLoader();
             defaultCertificateLoader.LoadIfNeeded(certificateDescription);
             return certificateDescription.Certificate;
         }

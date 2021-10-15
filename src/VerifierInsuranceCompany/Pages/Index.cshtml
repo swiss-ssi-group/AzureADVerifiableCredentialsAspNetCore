@@ -1,0 +1,19 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div style="text-align: center;">
+    <img src="VerifiedCredentialExpert-icon.png" height=200px; />
+    <h1>Verifiable Credential NDL Issuance and Verifier Sample</h1>
+        
+    <button type="button" id="idVerify" class="button">VERIFY CREDENTIAL</button>
+    <script>
+            var idVerify = document.getElementById('idVerify');
+
+            idVerify.addEventListener('click', () => {
+                window.location = "verifier";
+            })
+        </script>
+</div>

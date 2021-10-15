@@ -122,7 +122,7 @@ namespace IssuerDrivingLicense
             var driverLicense = await _driverLicenseService.GetDriverLicense(context.User.Identity.Name);
 
             payload.Issuance.Claims.Name = $"{driverLicense.FirstName} {driverLicense.Name}  {driverLicense.UserName}";
-            payload.Issuance.Claims.Details = $"Type: {driverLicense.LicenseType} IssuedAt: {driverLicense.IssuedAt.ToString("yyyy-MM-dd")}";
+            payload.Issuance.Claims.Details = $"Type: {driverLicense.LicenseType} IssuedAt: {driverLicense.IssuedAt:yyyy-MM-dd}";
 
             return payload;
         }
