@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Issuer.Pages
+namespace Verifiable_credentials_DotNet.Pages
 {
     public class IndexModel : PageModel
     {

@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Verifiable_credentials_DotNet
+namespace Issuer
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
@@ -42,7 +42,7 @@ namespace Verifiable_credentials_DotNet
         /// </summary>
         /// <returns>JSON object with the address to the presentation request and optionally a QR code and a state value which can be used to check on the response status</returns>
         [HttpGet("/api/issuer/issuance-request")]
-        public async Task<ActionResult> issuanceRequest()
+        public ActionResult IssuanceRequest()
         {
             try
             {
@@ -110,7 +110,7 @@ namespace Verifiable_credentials_DotNet
                 //with tools like ngrok since the URI changes all the time
                 //this way you don't need to modify the callback URL in the payload every time
                 //ngrok changes the URI
-                
+
                 if (payload["callback"]["url"] != null)
                 {
                     //localhost hostname can't work for callbacks so we won't overwrite it.
@@ -149,7 +149,7 @@ namespace Verifiable_credentials_DotNet
                     var accessToken = GetAccessToken().Result;
                     if (accessToken.Item1 == String.Empty)
                     {
-                        _log.LogError(String.Format("failed to acquire accesstoken: {0} : {1}"),accessToken.error, accessToken.error_description);
+                        _log.LogError(String.Format("failed to acquire accesstoken: {0} : {1}"), accessToken.error, accessToken.error_description);
                         return BadRequest(new { error = accessToken.error, error_description = accessToken.error_description });
                     }
 
@@ -206,7 +206,7 @@ namespace Verifiable_credentials_DotNet
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> issuanceCallback()
+        public ActionResult IssuanceCallback()
         {
             try
             {
@@ -255,7 +255,7 @@ namespace Verifiable_credentials_DotNet
                         //So assume this error happens when the users entered the incorrect pincode and ask to try again.
                         message = issuanceResponse["error"]["message"].ToString()
 
-                };
+                    };
                     _cache.Set(state, JsonConvert.SerializeObject(cacheData));
                 }
 
@@ -273,7 +273,7 @@ namespace Verifiable_credentials_DotNet
         //this method will respond with the status so the UI can reflect if the QR code was scanned and with the result of the issuance process
         //
         [HttpGet("/api/issuer/issuance-response")]
-        public async Task<ActionResult> issuanceResponse()
+        public ActionResult IssuanceResponse()
         {
             try
             {

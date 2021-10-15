@@ -1,14 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NationalDrivingLicense", "src\NationalDrivingLicense\NationalDrivingLicense.csproj", "{72380BA4-1F7B-4804-B445-ED0942071864}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Issuer", "src\Issuer\Issuer.csproj", "{778D1E78-B4FC-49F9-A64F-2FE410ED4D5E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C5C6AAB7-B8C9-41E5-B2F8-D62B00B77B5C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FB81EB1A-BF50-4B90-BC82-30D7B5975DAD}"
 	ProjectSection(SolutionItems) = preProject
-		README.md = README.md
+		src\CredentialFiles\VerifiedCredentialNationalDrivingLicenseDisplay.json = src\CredentialFiles\VerifiedCredentialNationalDrivingLicenseDisplay.json
+		src\CredentialFiles\VerifiedCredentialNationalDrivingLicenseIdtokenRules.json = src\CredentialFiles\VerifiedCredentialNationalDrivingLicenseIdtokenRules.json
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NationalDrivingLicense", "src\NationalDrivingLicense\NationalDrivingLicense.csproj", "{C1CEAC89-60A6-4F2B-8B7E-16301CF59C0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,19 +19,19 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{72380BA4-1F7B-4804-B445-ED0942071864}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{72380BA4-1F7B-4804-B445-ED0942071864}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{72380BA4-1F7B-4804-B445-ED0942071864}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{72380BA4-1F7B-4804-B445-ED0942071864}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A31E6EC1-70A3-4D42-8DFA-43181D9EB7D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A31E6EC1-70A3-4D42-8DFA-43181D9EB7D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A31E6EC1-70A3-4D42-8DFA-43181D9EB7D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A31E6EC1-70A3-4D42-8DFA-43181D9EB7D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{778D1E78-B4FC-49F9-A64F-2FE410ED4D5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{778D1E78-B4FC-49F9-A64F-2FE410ED4D5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{778D1E78-B4FC-49F9-A64F-2FE410ED4D5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{778D1E78-B4FC-49F9-A64F-2FE410ED4D5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1CEAC89-60A6-4F2B-8B7E-16301CF59C0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1CEAC89-60A6-4F2B-8B7E-16301CF59C0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1CEAC89-60A6-4F2B-8B7E-16301CF59C0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1CEAC89-60A6-4F2B-8B7E-16301CF59C0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {83284587-1BBD-4B5A-AD84-D0730EF003AD}
+		SolutionGuid = {FE7CBB47-F858-4AA8-90C2-256C9545A9BA}
 	EndGlobalSection
 EndGlobal

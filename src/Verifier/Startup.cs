@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 
-namespace Issuer
+namespace Verifiable_credentials_DotNet
 {
     public class Startup
     {

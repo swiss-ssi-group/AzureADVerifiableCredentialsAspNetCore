@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Issuer
+namespace Verifiable_credentials_DotNet
 {
     [Route("api/[controller]/[action]")]
     public class VerifierController : Controller

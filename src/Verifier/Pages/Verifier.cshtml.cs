@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Issuer.Pages
+namespace Verifiable_credentials_DotNet.Pages
 {
     public class VerifierModel : PageModel
     {
