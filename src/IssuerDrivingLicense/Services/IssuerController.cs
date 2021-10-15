@@ -8,6 +8,7 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics;
 using System.Net.Http.Headers;
 using IssuerDrivingLicense.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IssuerDrivingLicense
 {
@@ -43,7 +44,7 @@ namespace IssuerDrivingLicense
             try
             {
                 var payload = await _issuerService.GetIssuanceRequestPayloadAsync(Request, HttpContext);
-
+                var ddd  = System.Text.Json.JsonSerializer.Serialize(payload);
                 try
                 {
                     var (Token, Error, ErrorDescription) = await _issuerService.GetAccessToken();
@@ -112,6 +113,7 @@ namespace IssuerDrivingLicense
         /// This method is called by the VC Request API when the user scans a QR code and accepts the issued Verifiable Credential
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost("/api/issuer/issuanceCallback")]
         public async Task<ActionResult> IssuanceCallback()
         {
