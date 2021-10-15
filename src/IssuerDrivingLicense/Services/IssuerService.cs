@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Web;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 
 namespace IssuerDrivingLicense
 {
@@ -43,7 +42,7 @@ namespace IssuerDrivingLicense
             }
             else
             {
-                X509Certificate2 certificate = _credentialSettings.ReadCertificate(_credentialSettings.CertificateName);
+                var certificate = _credentialSettings.ReadCertificate(_credentialSettings.CertificateName);
                 app = ConfidentialClientApplicationBuilder.Create(_credentialSettings.ClientId)
                     .WithCertificate(certificate)
                     .WithAuthority(new Uri(_credentialSettings.Authority))
@@ -80,7 +79,7 @@ namespace IssuerDrivingLicense
             catch (MsalServiceException ex)
             {
                 // general error getting an access token
-                return (String.Empty, "500", "Something went wrong getting an access token for the client API:" + ex.Message);
+                return (string.Empty, "500", "Something went wrong getting an access token for the client API:" + ex.Message);
                 //return BadRequest(new { error = "500", error_description = "Something went wrong getting an access token for the client API:" + ex.Message });
             }
 
@@ -92,21 +91,11 @@ namespace IssuerDrivingLicense
         {
             string scheme = "https";// : this.Request.Scheme;
             string originalHost = request.Headers["x-original-host"];
-            string hostname = "";
+            string hostname;
             if (!string.IsNullOrEmpty(originalHost))
                 hostname = string.Format("{0}://{1}", scheme, originalHost);
             else hostname = string.Format("{0}://{1}", scheme, request.Host);
             return hostname;
-        }
-
-        public bool IsMobile(HttpRequest request)
-        {
-            string userAgent = request.Headers["User-Agent"];
-
-            if (userAgent.Contains("Android") || userAgent.Contains("iPhone"))
-                return true;
-            else
-                return false;
         }
 
         public async Task<IssuanceRequestPayload> GetIssuanceRequestPayloadAsync(HttpRequest request, HttpContext context)

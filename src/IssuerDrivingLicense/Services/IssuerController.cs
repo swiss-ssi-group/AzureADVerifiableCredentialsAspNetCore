@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Net;
-using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics;
 using System.Net.Http.Headers;
@@ -16,22 +15,23 @@ namespace IssuerDrivingLicense
     [ApiController]
     public class IssuerController : ControllerBase
     {
-        const string ISSUANCEPAYLOAD = "issuance_request_config.json";
-
         protected readonly CredentialSettings _credentialSettings;
         protected IMemoryCache _cache;
         protected readonly ILogger<IssuerController> _log;
         private readonly IssuerService _issuerService;
+        private HttpClient _httpClient;
 
         public IssuerController(IOptions<CredentialSettings> credentialSettings, 
             IMemoryCache memoryCache, 
             ILogger<IssuerController> log,
-            IssuerService issuerService)
+            IssuerService issuerService,
+            IHttpClientFactory httpClientFactory)
         {
             _credentialSettings = credentialSettings.Value;
             _cache = memoryCache;
             _log = log;
             _issuerService = issuerService;
+            _httpClient = httpClientFactory.CreateClient();
         }
 
         /// <summary>
@@ -54,11 +54,10 @@ namespace IssuerDrivingLicense
                         return BadRequest(new { error = Error, error_description = ErrorDescription });
                     }
 
-                    HttpClient client = new();
-                    var defaultRequestHeaders = client.DefaultRequestHeaders;
+                    var defaultRequestHeaders = _httpClient.DefaultRequestHeaders;
                     defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
 
-                    HttpResponseMessage res = await client.PostAsJsonAsync(
+                    HttpResponseMessage res = await _httpClient.PostAsJsonAsync(
                         _credentialSettings.ApiEndpoint, payload);
 
                     var response = await res.Content.ReadFromJsonAsync<IssuanceResponse>();
@@ -67,8 +66,6 @@ namespace IssuerDrivingLicense
                     {
                         return BadRequest(new { error = "400", error_description = "no response from VC API"});
                     }
-
-                    client.Dispose();
 
                     if (res.StatusCode == HttpStatusCode.Created)
                     {
@@ -115,21 +112,21 @@ namespace IssuerDrivingLicense
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("/api/issuer/issuanceCallback")]
-        public async Task<ActionResult> IssuanceCallback()
+        public ActionResult IssuanceCallback(IssuanceCallbackResponse issuanceResponse)
         {
             try
             {
-                string content = await new System.IO.StreamReader(Request.Body).ReadToEndAsync();
-                _log.LogTrace("callback!: " + content);
-                JObject issuanceResponse = JObject.Parse(content);
-                var state = issuanceResponse["state"].ToString();
+                //string content = await new System.IO.StreamReader(Request.Body).ReadToEndAsync();
+                //_log.LogTrace("callback!: " + content);
+                //JObject issuanceResponse = JObject.Parse(content);
+                var state = issuanceResponse.State;
 
                 //there are 2 different callbacks. 1 if the QR code is scanned (or deeplink has been followed)
                 //Scanning the QR code makes Authenticator download the specific request from the server
                 //the request will be deleted from the server immediately.
                 //That's why it is so important to capture this callback and relay this to the UI so the UI can hide
                 //the QR code to prevent the user from scanning it twice (resulting in an error since the request is already deleted)
-                if (issuanceResponse["code"].ToString() == "request_retrieved")
+                if (issuanceResponse.Code == "request_retrieved")
                 {
                     var cacheData = new
                     {
@@ -142,7 +139,7 @@ namespace IssuerDrivingLicense
                 //
                 //This callback is called when issuance is completed.
                 //
-                if (issuanceResponse["code"].ToString() == "issuance_successful")
+                if (issuanceResponse.Code == "issuance_successful")
                 {
                     var cacheData = new
                     {
@@ -154,15 +151,15 @@ namespace IssuerDrivingLicense
                 //
                 //We capture if something goes wrong during issuance. See documentation with the different error codes
                 //
-                if (issuanceResponse["code"].ToString() == "issuance_error")
+                if (issuanceResponse.Code == "issuance_error")
                 {
                     var cacheData = new
                     {
                         status = "issuance_error",
-                        payload = issuanceResponse["error"]["code"].ToString(),
+                        payload = issuanceResponse.Error?.Code,
                         //at the moment there isn't a specific error for incorrect entry of a pincode.
                         //So assume this error happens when the users entered the incorrect pincode and ask to try again.
-                        message = issuanceResponse["error"]["message"].ToString()
+                        message = issuanceResponse.Error?.Message
 
                     };
                     _cache.Set(state, JsonConvert.SerializeObject(cacheData));
