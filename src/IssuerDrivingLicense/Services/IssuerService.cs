@@ -125,7 +125,7 @@ namespace IssuerDrivingLicense
             var host = GetRequestHostName(request);
             payload.Callback.State = Guid.NewGuid().ToString();
             payload.Callback.Url = string.Format("{0}:/api/issuer/issuanceCallback", host);
-            payload.Callback.Headers.ApiKey = "OPTIONAL API-KEY for ISSUANCE CALLBACK API";
+            payload.Callback.Headers.ApiKey = _credentialSettings.VcApiCallbackApiKey;
 
             payload.Registration.ClientName = "Verifiable Credential NDL Sample";
             payload.Authority = _credentialSettings.IssuerAuthority;

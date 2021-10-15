@@ -206,7 +206,7 @@ namespace Verifiable_credentials_DotNet
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> issuanceCallback()
+        public async Task<ActionResult> IssuanceCallback()
         {
             try
             {

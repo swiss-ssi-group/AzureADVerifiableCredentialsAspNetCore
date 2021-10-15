@@ -80,6 +80,9 @@ namespace IssuerDrivingLicense
         /// (and identified by this CertificateName property)
         /// <remarks> 
         public string CertificateName { get; set; }
+
+        public string VcApiCallbackApiKey { get; set; }
+
         /// <summary>
         /// Checks if the sample is configured for using ClientSecret or Certificate. This method is just for the sake of this sample.
         /// You won't need this verification in your production application since you will be authenticating in AAD using one mechanism only.
