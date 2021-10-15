@@ -22,9 +22,31 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
+                        
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/DriverLicenseCredentials"
+                                id="tooltip-car"
+                                data-toggle="tooltip"
+                                data-placement="bottom"
+                                title="View you actual drivers license and view, get credentials">
+                                <i class="fa fa-car" aria-hidden="true"></i>
+                                View Driver License
+                            </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Admin">License Administration</a>
+                        </li>   
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/DriverLicenseCredentials"
+                                id="tooltip-car"
+                                data-toggle="tooltip"
+                                data-placement="bottom"
+                                title="View you actual drivers license and view, get credentials">
+                                <i class="fa fa-car" aria-hidden="true"></i>
+                                View Driver License
+                            </a>
+                        </li>
+
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

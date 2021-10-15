@@ -28,21 +28,6 @@ namespace IssuerDrivingLicense
         public async Task<IActionResult> OnGetAsync(string sortOrder,
             string currentFilter, string searchString, int? pageIndex)
         {
-            var claimTwoFactorEnabled = User.Claims.FirstOrDefault(t => t.Type == "amr");
-
-            if (claimTwoFactorEnabled != null && "mfa".Equals(claimTwoFactorEnabled.Value))
-            {
-                // You logged in with MFA, or MFA is disabled, do the admin stuff
-            }
-            else
-            {
-                var requireMfa = bool.Parse(_configuration["MfaRequiredForAdmin"]);
-                if (requireMfa)
-                {
-                    return Redirect("/Identity/Account/Manage/TwoFactorAuthentication");
-                }
-            }
-
             CurrentSort = sortOrder;
             NameSort = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             if (searchString != null)
@@ -56,24 +41,24 @@ namespace IssuerDrivingLicense
 
             CurrentFilter = searchString;
 
-            IQueryable<IdentityUser> UsersIQ = from s in _context.Users select s;
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                UsersIQ = UsersIQ.Where(s => s.UserName.Contains(searchString));
-            }
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    UsersIQ = UsersIQ.OrderByDescending(s => s.UserName);
-                    break;
-                default:
-                    UsersIQ = UsersIQ.OrderBy(s => s.UserName);
-                    break;
-            }
+            //IQueryable<IdentityUser> UsersIQ = from s in _context.Users select s;
+            //if (!string.IsNullOrEmpty(searchString))
+            //{
+            //    UsersIQ = UsersIQ.Where(s => s.UserName.Contains(searchString));
+            //}
+            //switch (sortOrder)
+            //{
+            //    case "name_desc":
+            //        UsersIQ = UsersIQ.OrderByDescending(s => s.UserName);
+            //        break;
+            //    default:
+            //        UsersIQ = UsersIQ.OrderBy(s => s.UserName);
+            //        break;
+            //}
 
-            int pageSize = 3;
-            Users = await PaginatedList<IdentityUser>.CreateAsync(
-                UsersIQ.AsNoTracking(), pageIndex ?? 1, pageSize);
+            //int pageSize = 3;
+            //Users = await PaginatedList<IdentityUser>.CreateAsync(
+            //    UsersIQ.AsNoTracking(), pageIndex ?? 1, pageSize);
 
             return Page();
         }
