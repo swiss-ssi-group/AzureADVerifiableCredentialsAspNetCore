@@ -13,7 +13,7 @@ namespace VerifierInsuranceCompany
     /// Description of the configuration of an AzureAD confidential client application. This should
     /// match the application registration done in the Azure portal
     /// </summary>
-    public class AppSettingsModel
+    public class CredentialSettings
     {
         /// <summary>
         /// instance of Azure AD, for example public Azure or a Sovereign cloud (Azure China, Germany, US government, etc ...)
@@ -86,7 +86,7 @@ namespace VerifierInsuranceCompany
         /// </summary>
         /// <param name="config">Configuration from appsettings.json</param>
         /// <returns></returns>
-        public bool AppUsesClientSecret(AppSettingsModel config)
+        public bool AppUsesClientSecret(CredentialSettings config)
         {
             string clientSecretPlaceholderValue = "[Enter here a client secret for your application]";
             string certificatePlaceholderValue = "[Or instead of client secret: Enter here the name of a certificate (from the user cert store) as registered with your application]";

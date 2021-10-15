@@ -11,8 +11,6 @@ namespace VerifierInsuranceCompany
 {
     public class Startup
     {
-  
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -23,14 +21,12 @@ namespace VerifierInsuranceCompany
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.Configure<KestrelServerOptions>(options =>
             {
                 options.AllowSynchronousIO = true;
             });
 
-            services.Configure<AppSettingsModel>(Configuration.GetSection("AppSettings"));
-
+            services.Configure<CredentialSettings>(Configuration.GetSection("CredentialSettings"));
 
             services.AddDistributedMemoryCache();
             services.AddSession(options =>

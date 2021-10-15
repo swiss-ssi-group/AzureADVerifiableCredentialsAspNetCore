@@ -23,13 +23,12 @@ namespace VerifierInsuranceCompany
     public class VerifierController : Controller
     {
         const string PRESENTATIONPAYLOAD = "presentation_request_config.json";
-//        const string PRESENTATIONPAYLOAD = "presentation_request_config - TrueIdentitySample.json";
 
-        protected readonly AppSettingsModel AppSettings;
+        protected readonly CredentialSettings AppSettings;
         protected IMemoryCache _cache;
         protected readonly ILogger<VerifierController> _log;
 
-        public VerifierController(IOptions<AppSettingsModel> appSettings,IMemoryCache memoryCache, ILogger<VerifierController> log)
+        public VerifierController(IOptions<CredentialSettings> appSettings,IMemoryCache memoryCache, ILogger<VerifierController> log)
         {
             this.AppSettings = appSettings.Value;
             _cache = memoryCache;
@@ -41,11 +40,10 @@ namespace VerifierInsuranceCompany
         /// </summary>
         /// <returns>JSON object with the address to the presentation request and optionally a QR code and a state value which can be used to check on the response status</returns>
         [HttpGet("/api/verifier/presentation-request")]
-        public async Task<ActionResult> presentationRequest()
+        public async Task<ActionResult> PresentationRequest()
         {
             try
             {
-
                 string jsonString = null;
                 //they payload template is loaded from disk and modified in the code below to make it easier to get started
                 //and having all config in a central location appsettings.json. 
@@ -105,7 +103,6 @@ namespace VerifierInsuranceCompany
 
                 jsonString = JsonConvert.SerializeObject(payload);
 
-
                 //CALL REST API WITH PAYLOAD
                 HttpStatusCode statusCode = HttpStatusCode.OK;
                 string response = null;
@@ -113,10 +110,10 @@ namespace VerifierInsuranceCompany
                 {
                     //The VC Request API is an authenticated API. We need to clientid and secret (or certificate) to create an access token which 
                     //needs to be send as bearer to the VC Request API
-                    var accessToken = GetAccessToken().Result;
-                    if (accessToken.Item1 == String.Empty)
+                    var accessToken = await GetAccessToken();
+                    if (accessToken.Item1 == string.Empty)
                     {
-                        _log.LogError(String.Format("failed to acquire accesstoken: {0} : {1}"), accessToken.error, accessToken.error_description);
+                        _log.LogError(string.Format("failed to acquire accesstoken: {0} : {1}"), accessToken.error, accessToken.error_description);
                         return BadRequest(new { error = accessToken.error, error_description = accessToken.error_description });
                     }
 
@@ -124,8 +121,8 @@ namespace VerifierInsuranceCompany
                     var defaultRequestHeaders = client.DefaultRequestHeaders;
                     defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.token);
 
-                    HttpResponseMessage res = client.PostAsync(AppSettings.ApiEndpoint, new StringContent(jsonString, Encoding.UTF8, "application/json")).Result;
-                    response = res.Content.ReadAsStringAsync().Result;
+                    HttpResponseMessage res = await client.PostAsync(AppSettings.ApiEndpoint, new StringContent(jsonString, Encoding.UTF8, "application/json"));
+                    response = await res.Content.ReadAsStringAsync();
                     _log.LogTrace("succesfully called Request API");
                     client.Dispose();
                     statusCode = res.StatusCode;
@@ -174,11 +171,11 @@ namespace VerifierInsuranceCompany
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> presentationCallback()
+        public async Task<ActionResult> PresentationCallback()
         {
             try
             {
-                string content = new System.IO.StreamReader(this.Request.Body).ReadToEndAsync().Result;
+                string content = await new System.IO.StreamReader(this.Request.Body).ReadToEndAsync();
                 Debug.WriteLine("callback!: " + content);
                 JObject presentationResponse = JObject.Parse(content);
                 var state = presentationResponse["state"].ToString();
@@ -231,9 +228,8 @@ namespace VerifierInsuranceCompany
         //this method will respond with the status so the UI can reflect if the QR code was scanned and with the result of the presentation
         //
         [HttpGet("/api/verifier/presentation-response")]
-        public async Task<ActionResult> presentationResponse()
+        public async Task<ActionResult> PresentationResponse()
         {
-            
             try
             {
                 //the id is the state value initially created when the issuanc request was requested from the request API
