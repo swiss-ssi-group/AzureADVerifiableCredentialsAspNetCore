@@ -2,6 +2,7 @@ using IssuerDrivingLicense.Persistence;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,12 +21,17 @@ namespace IssuerDrivingLicense
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<DriverLicenseService>();
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
 
+            services.Configure<CredentialSettings>(Configuration.GetSection("CredentialSettings"));
             services.AddDistributedMemoryCache();
+
+            services.AddScoped<DriverLicenseService>();
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
