@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 using System.Net;
 using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics;
 using System.Net.Http.Headers;
 using IssuerDrivingLicense.Services;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Json;
 
 namespace IssuerDrivingLicense
 {
@@ -78,13 +77,13 @@ namespace IssuerDrivingLicense
 
                         response.Id = payload.Callback.State;
        
-                        var cacheData = new
+                        var cacheData = new CacheData
                         {
-                            status = IssuanceConst.NotScanned,
-                            message = "Request ready, please scan with Authenticator",
-                            expiry = response.Expiry.ToString()
+                            Status = IssuanceConst.NotScanned,
+                            Message = "Request ready, please scan with Authenticator",
+                            Expiry = response.Expiry.ToString()
                         };
-                        _cache.Set(payload.Callback.State, JsonConvert.SerializeObject(cacheData));
+                        _cache.Set(payload.Callback.State, JsonSerializer.Serialize(cacheData));
 
                         return Ok(response);
                     }
@@ -122,38 +121,38 @@ namespace IssuerDrivingLicense
                 //the QR code to prevent the user from scanning it twice (resulting in an error since the request is already deleted)
                 if (issuanceResponse.Code == IssuanceConst.RequestRetrieved)
                 {
-                    var cacheData = new
+                    var cacheData = new CacheData
                     {
-                        status = IssuanceConst.RequestRetrieved,
-                        message = "QR Code is scanned. Waiting for issuance...",
+                        Status = IssuanceConst.RequestRetrieved,
+                        Message = "QR Code is scanned. Waiting for issuance...",
                     };
-                    _cache.Set(issuanceResponse.State, JsonConvert.SerializeObject(cacheData));
+                    _cache.Set(issuanceResponse.State, JsonSerializer.Serialize(cacheData));
                 }
 
                 if (issuanceResponse.Code == IssuanceConst.IssuanceSuccessful)
                 {
-                    var cacheData = new
+                    var cacheData = new CacheData
                     {
-                        status = IssuanceConst.IssuanceSuccessful,
-                        message = "Credential successfully issued",
+                        Status = IssuanceConst.IssuanceSuccessful,
+                        Message = "Credential successfully issued",
                     };
-                    _cache.Set(issuanceResponse.State, JsonConvert.SerializeObject(cacheData));
+                    _cache.Set(issuanceResponse.State, JsonSerializer.Serialize(cacheData));
                 }
 
                 if (issuanceResponse.Code == IssuanceConst.IssuanceError)
                 {
-                    var cacheData = new
+                    var cacheData = new CacheData
                     {
-                        status = IssuanceConst.IssuanceError,
-                        payload = issuanceResponse.Error?.Code,
+                        Status = IssuanceConst.IssuanceError,
+                        Payload = issuanceResponse.Error?.Code,
                         //at the moment there isn't a specific error for incorrect entry of a pincode.
                         //So assume this error happens when the users entered the incorrect pincode and ask to try again.
-                        message = issuanceResponse.Error?.Message
+                        Message = issuanceResponse.Error?.Message
                     };
-                    _cache.Set(issuanceResponse.State, JsonConvert.SerializeObject(cacheData));
+                    _cache.Set(issuanceResponse.State, JsonSerializer.Serialize(cacheData));
                 }
 
-                return new OkResult();
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -178,13 +177,13 @@ namespace IssuerDrivingLicense
                 {
                     return BadRequest(new { error = "400", error_description = "Missing argument 'id'" });
                 }
-                JObject value = null;
+                CacheData value = null;
                 if (_cache.TryGetValue(state, out string buf))
                 {
-                    value = JObject.Parse(buf);
+                    value = JsonSerializer.Deserialize<CacheData>(buf);
 
                     Debug.WriteLine("check if there was a response yet: " + value);
-                    return new ContentResult { ContentType = "application/json", Content = JsonConvert.SerializeObject(value) };
+                    return new ContentResult { ContentType = "application/json", Content = JsonSerializer.Serialize(value) };
                 }
 
                 return Ok();
