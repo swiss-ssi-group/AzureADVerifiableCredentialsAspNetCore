@@ -29,11 +29,10 @@ namespace IssuerDrivingLicense
             });
 
             services.Configure<CredentialSettings>(Configuration.GetSection("CredentialSettings"));
-
             services.AddScoped<DriverLicenseService>();
+            services.AddScoped<IssuerService>();
 
             services.AddDatabaseDeveloperPageExceptionFilter();
-
             services.AddDbContext<DrivingLicenseDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));

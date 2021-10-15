@@ -24,16 +24,19 @@ namespace IssuerDrivingLicense
         protected IMemoryCache _cache;
         protected readonly ILogger<IssuerController> _log;
         private readonly DriverLicenseService _driverLicenseService;
+        private readonly IssuerService _issuerService;
 
         public IssuerController(IOptions<CredentialSettings> credentialSettings, 
             IMemoryCache memoryCache, 
             ILogger<IssuerController> log,
-            DriverLicenseService driverLicenseService)
+            DriverLicenseService driverLicenseService,
+            IssuerService issuerService)
         {
             _credentialSettings = credentialSettings.Value;
             _cache = memoryCache;
             _log = log;
             _driverLicenseService = driverLicenseService;
+            _issuerService = issuerService;
         }
 
         /// <summary>
@@ -72,7 +75,7 @@ namespace IssuerDrivingLicense
                 //payload["issuance"]["pin"].Parent.Remove();
                 if (payload["issuance"]["pin"] != null)
                 {
-                    if (isMobile())
+                    if (_issuerService.IsMobile(Request))
                     {
                         _log.LogTrace("pin element found in JSON payload, but on mobile so remove pin since we will be using deeplinking");
                         //consider providing the PIN through other means to your user instead of removing it.
@@ -115,7 +118,7 @@ namespace IssuerDrivingLicense
                     //localhost hostname can't work for callbacks so we won't overwrite it.
                     //this happens for example when testing with sign-in to an IDP and https://localhost is used as redirect URI
                     //in that case the callback should be configured in the payload directly instead of being modified in the code here
-                    string host = GetRequestHostName();
+                    string host = _issuerService.GetRequestHostName(Request);
                     if (!host.Contains("//localhost"))
                     {
                         payload["callback"]["url"] = String.Format("{0}:/api/issuer/issuanceCallback", host);
@@ -147,7 +150,7 @@ namespace IssuerDrivingLicense
                 {
                     //The VC Request API is an authenticated API. We need to clientid and secret (or certificate) to create an access token which 
                     //needs to be send as bearer to the VC Request API
-                    var accessToken = GetAccessToken().Result;
+                    var accessToken = await _issuerService.GetAccessToken();
                     if (accessToken.Item1 == String.Empty)
                     {
                         _log.LogError(String.Format("failed to acquire accesstoken: {0} : {1}"), accessToken.error, accessToken.error_description);
@@ -211,7 +214,7 @@ namespace IssuerDrivingLicense
         {
             try
             {
-                string content = new System.IO.StreamReader(this.Request.Body).ReadToEndAsync().Result;
+                string content = new System.IO.StreamReader(Request.Body).ReadToEndAsync().Result;
                 _log.LogTrace("callback!: " + content);
                 JObject issuanceResponse = JObject.Parse(content);
                 var state = issuanceResponse["state"].ToString();
@@ -300,89 +303,6 @@ namespace IssuerDrivingLicense
             {
                 return BadRequest(new { error = "400", error_description = ex.Message });
             }
-        }
-
-        //some helper functions
-        protected async Task<(string token, string error, string error_description)> GetAccessToken()
-        {
-
-            // You can run this sample using ClientSecret or Certificate. The code will differ only when instantiating the IConfidentialClientApplication
-            bool isUsingClientSecret = _credentialSettings.AppUsesClientSecret(_credentialSettings);
-
-            // Since we are using application permissions this will be a confidential client application
-            IConfidentialClientApplication app;
-            if (isUsingClientSecret)
-            {
-                app = ConfidentialClientApplicationBuilder.Create(_credentialSettings.ClientId)
-                    .WithClientSecret(_credentialSettings.ClientSecret)
-                    .WithAuthority(new Uri(_credentialSettings.Authority))
-                    .Build();
-            }
-            else
-            {
-                X509Certificate2 certificate = _credentialSettings.ReadCertificate(_credentialSettings.CertificateName);
-                app = ConfidentialClientApplicationBuilder.Create(_credentialSettings.ClientId)
-                    .WithCertificate(certificate)
-                    .WithAuthority(new Uri(_credentialSettings.Authority))
-                    .Build();
-            }
-
-            //configure in memory cache for the access tokens. The tokens are typically valid for 60 seconds,
-            //so no need to create new ones for every web request
-            app.AddDistributedTokenCache(services =>
-            {
-                services.AddDistributedMemoryCache();
-                services.AddLogging(configure => configure.AddConsole())
-                .Configure<LoggerFilterOptions>(options => options.MinLevel = Microsoft.Extensions.Logging.LogLevel.Debug);
-            });
-
-            // With client credentials flows the scopes is ALWAYS of the shape "resource/.default", as the 
-            // application permissions need to be set statically (in the portal or by PowerShell), and then granted by
-            // a tenant administrator. 
-            string[] scopes = new string[] { _credentialSettings.VCServiceScope };
-
-            AuthenticationResult result = null;
-            try
-            {
-                result = await app.AcquireTokenForClient(scopes)
-                    .ExecuteAsync();
-            }
-            catch (MsalServiceException ex) when (ex.Message.Contains("AADSTS70011"))
-            {
-                // Invalid scope. The scope has to be of the form "https://resourceurl/.default"
-                // Mitigation: change the scope to be as expected
-                return (string.Empty, "500", "Scope provided is not supported");
-                //return BadRequest(new { error = "500", error_description = "Scope provided is not supported" });
-            }
-            catch (MsalServiceException ex)
-            {
-                // general error getting an access token
-                return (String.Empty, "500", "Something went wrong getting an access token for the client API:" + ex.Message);
-                //return BadRequest(new { error = "500", error_description = "Something went wrong getting an access token for the client API:" + ex.Message });
-            }
-
-            _log.LogTrace(result.AccessToken);
-            return (result.AccessToken, String.Empty, String.Empty);
-        }
-        protected string GetRequestHostName()
-        {
-            string scheme = "https";// : this.Request.Scheme;
-            string originalHost = this.Request.Headers["x-original-host"];
-            string hostname = "";
-            if (!string.IsNullOrEmpty(originalHost))
-                hostname = string.Format("{0}://{1}", scheme, originalHost);
-            else hostname = string.Format("{0}://{1}", scheme, this.Request.Host);
-            return hostname;
-        }
-
-        protected bool isMobile()
-        {
-            string userAgent = this.Request.Headers["User-Agent"];
-
-            if (userAgent.Contains("Android") || userAgent.Contains("iPhone"))
-                return true;
-            else
-                return false;
         }
     }
 }
