@@ -202,7 +202,7 @@ namespace IssuerDrivingLicense
                     return new ContentResult { ContentType = "application/json", Content = JsonConvert.SerializeObject(value) };
                 }
 
-                return new OkResult();
+                return Ok();
             }
             catch (Exception ex)
             {
