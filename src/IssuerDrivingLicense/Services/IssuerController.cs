@@ -135,7 +135,7 @@ namespace IssuerDrivingLicense
 
                 //here you could change the payload manifest and change the firstname and lastname
                 payload["issuance"]["claims"]["given_name"] = $"{driverLicense.FirstName} {driverLicense.Name}  {driverLicense.UserName}";
-                payload["issuance"]["claims"]["family_name"] = $"Type: {driverLicense.LicenseType} IssuedAt: {driverLicense.IssuedAt}";
+                payload["issuance"]["claims"]["family_name"] = $"Type: {driverLicense.LicenseType} IssuedAt: {driverLicense.IssuedAt.ToString("yyyy-MM-dd")}";
 
                 jsonString = JsonConvert.SerializeObject(payload);
 
