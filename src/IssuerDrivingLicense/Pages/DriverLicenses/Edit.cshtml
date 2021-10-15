@@ -37,9 +37,12 @@
     </div>
 </div>
 
+<br />
+
 <div>
-    <a asp-page="./User" asp-route-id="@Model.DriverLicense.UserName">Back to List</a>
+    <a asp-page="./User" asp-route-id="@Model.DriverLicense.UserName">Back to User List</a>
 </div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

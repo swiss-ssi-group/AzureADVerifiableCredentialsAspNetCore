@@ -8,18 +8,22 @@ namespace IssuerDrivingLicense.Pages.DriverLicenses
     {
         private readonly DrivingLicenseDbContext _context;
 
+        [FromQuery(Name = "id")]
+        public string Id { get; set; }
+
         public string UserName { get; set; }
 
         [BindProperty]
-        public DriverLicense DriverLicense { get; set; }
+        public DriverLicense DriverLicense { get; set; } = new DriverLicense();
 
         public CreateModel(DrivingLicenseDbContext context)
         {
             _context = context;
         }
 
-        public IActionResult OnGet()
+        public IActionResult OnGet(string id)
         {
+            DriverLicense.UserName = id;
             return Page();
         }
 
