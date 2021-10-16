@@ -9,10 +9,6 @@
         
 <button type="button" id="sign-in" class="btn btn-primary">VERIFY CREDENTIAL</button>
 
-<a id="deeplink" style="display: none;margin-top: 10px;">Tap to open Authenticator on mobile</a>
-<div id="qrcode" style="text-align: center"></div>
-<div id="pinCodeText" style="display: none"></div>
-
 <div id="message-wrapper" class="margin-bottom-75 margin-top-75" style="display: none">
     <i class="fas fa-user-check green icon-text-large margin-bottom-25"></i>
     <div id="message"></div>
@@ -21,6 +17,12 @@
     <br />
     <div id="payload"></div>
 </div>
+
+ <div id="qrText"></div>
+
+<a id="deeplink" style="display: none;margin-top: 10px;">Tap to open Authenticator on mobile</a>
+<div id="qrcode" style="text-align: center"></div>
+<div id="pinCodeText" style="display: none"></div>
 
 <script src="qrcode.min.js"></script>
 <script>
