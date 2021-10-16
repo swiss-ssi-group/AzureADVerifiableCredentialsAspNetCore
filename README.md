@@ -1,6 +1,8 @@
+
+# Azure AD Verifiable Credentials using Azure AD _id_tokens
+
 [![.NET](https://github.com/swiss-ssi-group/AzureADVerifiableCredentialsAspNetCore/actions/workflows/dotnet.yml/badge.svg)](https://github.com/swiss-ssi-group/AzureADVerifiableCredentialsAspNetCore/actions/workflows/dotnet.yml)
 
-# Azure AD Verifiable Credentials
 
 ## Links
 
