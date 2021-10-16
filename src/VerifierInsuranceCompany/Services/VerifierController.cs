@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
@@ -12,7 +11,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using VerifierInsuranceCompany.Services;
 using System.Net.Http.Json;
-using System.Text;
 
 namespace VerifierInsuranceCompany
 {
@@ -170,13 +168,13 @@ namespace VerifierInsuranceCompany
                 {
                     return BadRequest(new { error = "400", error_description = "Missing argument 'id'" });
                 }
-                JObject value = null;
+                CacheData value = null;
                 if (_cache.TryGetValue(state, out string buf))
                 {
-                    value = JObject.Parse(buf);
+                    value = System.Text.Json.JsonSerializer.Deserialize<CacheData>(buf);
 
                     Debug.WriteLine("check if there was a response yet: " + value);
-                    return new ContentResult { ContentType = "application/json", Content = JsonConvert.SerializeObject(value) };
+                    return new ContentResult { ContentType = "application/json", Content = System.Text.Json.JsonSerializer.Serialize(value) };
                 }
 
                 return Ok();

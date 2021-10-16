@@ -54,31 +54,31 @@
         }).catch(error => { console.log(error.message); })
 
         var checkStatus = setInterval(function () {
-                if(respIssuanceReq){
+                if(respPresentationReq){
                     fetch('api/verifier/presentation-response?id=' + respPresentationReq.id )
-                .then(response => response.text())
-                .catch(error => document.getElementById("message").innerHTML = error)
-                .then(response => {
-                    if (response.length > 0) {
-                        console.log(response)
-                        respMsg = JSON.parse(response);
-                        // QR Code scanned
-                        if (respMsg.status == 'request_retrieved') {
-                            document.getElementById('message-wrapper').style.display = "block";
-                            document.getElementById('qrText').style.display = "none";
-                            document.getElementById('qrcode').style.display = "none";
+                    .then(response => response.text())
+                    .catch(error => document.getElementById("message").innerHTML = error)
+                    .then(response => {
+                        if (response.length > 0) {
+                            console.log(response)
+                            respMsg = JSON.parse(response);
+                            // QR Code scanned
+                            if (respMsg.status == 'request_retrieved') {
+                                document.getElementById('message-wrapper').style.display = "block";
+                                document.getElementById('qrText').style.display = "none";
+                                document.getElementById('qrcode').style.display = "none";
 
-                            document.getElementById('message').innerHTML = respMsg.message;
-                        }
+                                document.getElementById('message').innerHTML = respMsg.message;
+                            }
                                     
-                        if (respMsg.status == 'presentation_verified') {
-                            document.getElementById('message').innerHTML = respMsg.message;
-                            document.getElementById('payload').innerHTML = "Payload: " + JSON.stringify(respMsg.payload);
-                            document.getElementById('subject').innerHTML = respMsg.firstName +" " + respMsg.lastName +" is a Verifiable Credential NDL";
-                            clearInterval(checkStatus);
+                            if (respMsg.status == 'presentation_verified') {
+                                document.getElementById('message').innerHTML = respMsg.message;
+                                document.getElementById('payload').innerHTML = "Payload: " + JSON.stringify(respMsg.payload);
+                                document.getElementById('subject').innerHTML = respMsg.firstName +" " + respMsg.lastName +" is a Verifiable Credential NDL";
+                                clearInterval(checkStatus);
+                            }
                         }
-                    }
-                })
+                    })
                 }
             
         }, 1500); //change this to higher interval if you use ngrok to prevent overloading the free tier service
