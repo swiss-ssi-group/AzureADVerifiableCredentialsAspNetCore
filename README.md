@@ -18,8 +18,17 @@ https://www.w3.org/TR/vc-data-model/
 
 https://daniel-krzyczkowski.github.io/Azure-AD-Verifiable-Credentials-Intro/
 
-https://docs.microsoft.com/en-us/azure/active-directory-b2c/custom-policy-overview
 
-https://didproject.azurewebsites.net/docs/idp-claims.html
+https://dotnetthoughts.net/using-node-services-in-aspnet-core/
 
-https://www.xtseminars.co.uk/post/issuing-dids-and-vcs-with-the-microsoft-example-app-and-authenticator
+https://identity.foundation/ion/explorer
+
+https://www.npmjs.com/package/ngrok
+
+https://github.com/microsoft/VerifiableCredentials-Verification-SDK-Typescript
+
+https://identity.foundation/ion/explorer
+
+https://www.npmjs.com/package/ngrok
+
+https://github.com/microsoft/VerifiableCredentials-Verification-SDK-Typescript
