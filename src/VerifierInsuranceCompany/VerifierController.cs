@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
+using VerifierInsuranceCompany.Services;
 
 namespace VerifierInsuranceCompany
 {
@@ -134,13 +135,13 @@ namespace VerifierInsuranceCompany
 
                         //We use in memory cache to keep state about the request. The UI will check the state when calling the presentationResponse method
                     
-                        var cacheData = new
+                        var cacheData = new CacheData
                         {
-                            status = "notscanned",
-                            message = "Request ready, please scan with Authenticator",
-                            expiry = requestConfig["expiry"].ToString()
+                            Status = "notscanned",
+                            Message = "Request ready, please scan with Authenticator",
+                            Expiry = requestConfig["expiry"].ToString()
                         };
-                        _cache.Set(state, JsonConvert.SerializeObject(cacheData));
+                        _cache.Set(state, System.Text.Json.JsonSerializer.Serialize(cacheData));
 
                         //the response from the VC Request API call is returned to the caller (the UI). It contains the URI to the request which Authenticator can download after
                         //it has scanned the QR code. If the payload requested the VC Request service to create the QR code that is returned as well
@@ -186,12 +187,12 @@ namespace VerifierInsuranceCompany
                 //the QR code to prevent the user from scanning it twice (resulting in an error since the request is already deleted)
                 if (presentationResponse["code"].ToString() == "request_retrieved")
                 {
-                    var cacheData = new
+                    var cacheData = new CacheData
                     {
-                        status = "request_retrieved",
-                        message = "QR Code is scanned. Waiting for validation...",
+                        Status = "request_retrieved",
+                        Message = "QR Code is scanned. Waiting for validation...",
                     };
-                    _cache.Set(state, JsonConvert.SerializeObject(cacheData));
+                    _cache.Set(state, System.Text.Json.JsonSerializer.Serialize(cacheData));
                 }
 
                 // the 2nd callback is the result with the verified credential being verified.
@@ -200,17 +201,17 @@ namespace VerifierInsuranceCompany
                 // In this case the result is put in the in memory cache which is used by the UI when polling for the state so the UI can be updated.
                 if (presentationResponse["code"].ToString() == "presentation_verified")
                 {
-                    var cacheData = new
+                    var cacheData = new CacheData
                     {
-                        status = "presentation_verified",
-                        message = "Presentation verified",
-                        payload = presentationResponse["issuers"].ToString(),
-                        subject = presentationResponse["subject"].ToString(),
-                        firstName = presentationResponse["issuers"][0]["claims"]["firstName"].ToString(),
-                        lastName = presentationResponse["issuers"][0]["claims"]["lastName"].ToString()
+                        Status = "presentation_verified",
+                        Message = "Presentation verified",
+                        Payload = presentationResponse["issuers"].ToString(),
+                        Subject = presentationResponse["subject"].ToString(),
+                        Name = presentationResponse["issuers"][0]["claims"]["firstName"].ToString(),
+                        Details = presentationResponse["issuers"][0]["claims"]["lastName"].ToString()
 
                     };
-                    _cache.Set(state, JsonConvert.SerializeObject(cacheData));
+                    _cache.Set(state, System.Text.Json.JsonSerializer.Serialize(cacheData));
 
                 }
                 
