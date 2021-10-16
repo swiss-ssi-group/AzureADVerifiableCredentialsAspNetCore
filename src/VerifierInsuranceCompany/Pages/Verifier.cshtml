@@ -87,7 +87,7 @@
                             if (respMsg.status == 'presentation_verified') {
                                 document.getElementById('message').innerHTML = respMsg.message;
                                 document.getElementById('payload').innerHTML = "Payload: " + JSON.stringify(respMsg.payload);
-                                document.getElementById('subject').innerHTML = respMsg.firstName +" " + respMsg.lastName +" is a Verifiable Credential NDL";
+                                document.getElementById('subject').innerHTML = respMsg.name + " is a Verified Credential Driving license";
                                 clearInterval(checkStatus);
                             }
                         }
