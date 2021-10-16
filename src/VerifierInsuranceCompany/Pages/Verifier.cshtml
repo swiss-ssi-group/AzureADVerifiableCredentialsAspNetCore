@@ -54,7 +54,8 @@
         }).catch(error => { console.log(error.message); })
 
         var checkStatus = setInterval(function () {
-            fetch('api/verifier/presentation-response?id=' + respPresentationReq.id )
+                if(respIssuanceReq){
+                    fetch('api/verifier/presentation-response?id=' + respPresentationReq.id )
                 .then(response => response.text())
                 .catch(error => document.getElementById("message").innerHTML = error)
                 .then(response => {
@@ -78,6 +79,8 @@
                         }
                     }
                 })
+                }
+            
         }, 1500); //change this to higher interval if you use ngrok to prevent overloading the free tier service
     })
 </script>
