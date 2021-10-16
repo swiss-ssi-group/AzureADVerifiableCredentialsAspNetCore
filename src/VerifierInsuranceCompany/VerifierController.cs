@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -10,12 +9,9 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography.X509Certificates;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Web;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace VerifierInsuranceCompany
 {
@@ -27,12 +23,15 @@ namespace VerifierInsuranceCompany
         protected readonly CredentialSettings AppSettings;
         protected IMemoryCache _cache;
         protected readonly ILogger<VerifierController> _log;
+        private readonly VerifierService _verifierService;
 
-        public VerifierController(IOptions<CredentialSettings> appSettings,IMemoryCache memoryCache, ILogger<VerifierController> log)
+        public VerifierController(IOptions<CredentialSettings> appSettings,
+            IMemoryCache memoryCache, ILogger<VerifierController> log, VerifierService verifierService)
         {
             this.AppSettings = appSettings.Value;
             _cache = memoryCache;
             _log = log;
+            _verifierService = verifierService;
         }
 
         /// <summary>
@@ -94,7 +93,7 @@ namespace VerifierInsuranceCompany
                     //localhost hostname can't work for callbacks so we won't overwrite it.
                     //this happens for example when testing with sign-in to an IDP and https://localhost is used as redirect URI
                     //in that case the callback should be configured in the payload directly instead of being modified in the code here
-                    string host = GetRequestHostName();
+                    string host = _verifierService.GetRequestHostName(Request);
                     if (!host.Contains("//localhost"))
                     {
                         payload["callback"]["url"] = String.Format("{0}:/api/verifier/presentationCallback", host);
@@ -110,16 +109,16 @@ namespace VerifierInsuranceCompany
                 {
                     //The VC Request API is an authenticated API. We need to clientid and secret (or certificate) to create an access token which 
                     //needs to be send as bearer to the VC Request API
-                    var accessToken = await GetAccessToken();
-                    if (accessToken.Item1 == string.Empty)
+                    var accessToken = await _verifierService.GetAccessToken();
+                    if (!string.IsNullOrEmpty(accessToken.Token))
                     {
-                        _log.LogError(string.Format("failed to acquire accesstoken: {0} : {1}"), accessToken.error, accessToken.error_description);
-                        return BadRequest(new { error = accessToken.error, error_description = accessToken.error_description });
+                        _log.LogError(string.Format("failed to acquire accesstoken: {0} : {1}"), accessToken.Error, accessToken.ErrorDescription);
+                        return BadRequest(new { error = accessToken.Error, error_description = accessToken.ErrorDescription });
                     }
 
                     HttpClient client = new HttpClient();
                     var defaultRequestHeaders = client.DefaultRequestHeaders;
-                    defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.token);
+                    defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.Token);
 
                     HttpResponseMessage res = await client.PostAsync(AppSettings.ApiEndpoint, new StringContent(jsonString, Encoding.UTF8, "application/json"));
                     response = await res.Content.ReadAsStringAsync();
@@ -256,78 +255,6 @@ namespace VerifierInsuranceCompany
             }
 
 
-        }
-
-        //some helper functions
-        protected async Task<(string token, string error, string error_description)> GetAccessToken()
-        {
-            // You can run this sample using ClientSecret or Certificate. The code will differ only when instantiating the IConfidentialClientApplication
-            bool isUsingClientSecret = AppSettings.AppUsesClientSecret(AppSettings);
-
-            // Since we are using application permissions this will be a confidential client application
-            IConfidentialClientApplication app;
-            if (isUsingClientSecret)
-            {
-                app = ConfidentialClientApplicationBuilder.Create(AppSettings.ClientId)
-                    .WithClientSecret(AppSettings.ClientSecret)
-                    .WithAuthority(new Uri(AppSettings.Authority))
-                    .Build();
-            }
-            else
-            {
-                X509Certificate2 certificate = AppSettings.ReadCertificate(AppSettings.CertificateName);
-                app = ConfidentialClientApplicationBuilder.Create(AppSettings.ClientId)
-                    .WithCertificate(certificate)
-                    .WithAuthority(new Uri(AppSettings.Authority))
-                    .Build();
-            }
-
-            //configure in memory cache for the access tokens. The tokens are typically valid for 60 seconds,
-            //so no need to create new ones for every web request
-            app.AddDistributedTokenCache(services =>
-            {
-                services.AddDistributedMemoryCache();
-                services.AddLogging(configure => configure.AddConsole())
-                .Configure<LoggerFilterOptions>(options => options.MinLevel = Microsoft.Extensions.Logging.LogLevel.Debug);
-            });
-
-            // With client credentials flows the scopes is ALWAYS of the shape "resource/.default", as the 
-            // application permissions need to be set statically (in the portal or by PowerShell), and then granted by
-            // a tenant administrator. 
-            string[] scopes = new string[] { AppSettings.VCServiceScope };
-
-            AuthenticationResult result = null;
-            try
-            {
-                result = await app.AcquireTokenForClient(scopes)
-                    .ExecuteAsync();
-            }
-            catch (MsalServiceException ex) when (ex.Message.Contains("AADSTS70011"))
-            {
-                // Invalid scope. The scope has to be of the form "https://resourceurl/.default"
-                // Mitigation: change the scope to be as expected
-                return (string.Empty, "500", "Scope provided is not supported");
-                //return BadRequest(new { error = "500", error_description = "Scope provided is not supported" });
-            }
-            catch (MsalServiceException ex)
-            {
-                // general error getting an access token
-                return (String.Empty, "500", "Something went wrong getting an access token for the client API:" + ex.Message);
-                //return BadRequest(new { error = "500", error_description = "Something went wrong getting an access token for the client API:" + ex.Message });
-            }
-
-            _log.LogTrace(result.AccessToken);
-            return (result.AccessToken, String.Empty, String.Empty);
-        }
-        protected string GetRequestHostName()
-        {
-            string scheme = "https";// : this.Request.Scheme;
-            string originalHost = this.Request.Headers["x-original-host"];
-            string hostname = "";
-            if (!string.IsNullOrEmpty(originalHost))
-                hostname = string.Format("{0}://{1}", scheme, originalHost);
-            else hostname = string.Format("{0}://{1}", scheme, this.Request.Host);
-            return hostname;
         }
     }
 }
