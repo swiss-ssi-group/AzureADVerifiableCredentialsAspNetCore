@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using VerifierInsuranceCompany.Services;
 using System.Net.Http.Json;
+using System.Text;
 
 namespace VerifierInsuranceCompany
 {
@@ -60,7 +61,6 @@ namespace VerifierInsuranceCompany
                 var defaultRequestHeaders = _httpClient.DefaultRequestHeaders;
                 defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.Token);
 
-                var data = System.Text.Json.JsonSerializer.Serialize(payload);
                 HttpResponseMessage res = await _httpClient.PostAsJsonAsync(
                     _credentialSettings.ApiEndpoint, payload);
 

@@ -39,9 +39,13 @@ namespace VerifierInsuranceCompany
             payload.Registration.Purpose = "So we can see that you a veriable credentials NDL";
             payload.Authority = _credentialSettings.VerifierAuthority;
 
-            payload.Presentation.RequestedCredentials.CrendentialsType = "MyDrivingLicense";
-            payload.Presentation.RequestedCredentials.Purpose = "So we can see that you a veriable credentials NDL";
-            payload.Presentation.RequestedCredentials.AcceptedIssuers.Add(_credentialSettings.IssuerAuthority);
+            var requestedCredentials = new RequestedCredentials
+            {
+                CrendentialsType = "MyDrivingLicense",
+                Purpose = "So we can see that you a veriable credentials NDL"
+            };
+            requestedCredentials.AcceptedIssuers.Add(_credentialSettings.IssuerAuthority);
+            payload.Presentation.RequestedCredentials.Add(requestedCredentials);
 
             return payload;
         }
