@@ -109,8 +109,11 @@ namespace IssuerDrivingLicense
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("/api/issuer/issuanceCallback")]
-        public ActionResult IssuanceCallback(IssuanceCallbackResponse issuanceResponse)
+        public async Task<ActionResult> IssuanceCallback()
         {
+            string content = await new System.IO.StreamReader(Request.Body).ReadToEndAsync();
+            var issuanceResponse = JsonSerializer.Deserialize<IssuanceCallbackResponse>(content);
+
             try
             {
                 //there are 2 different callbacks. 1 if the QR code is scanned (or deeplink has been followed)
