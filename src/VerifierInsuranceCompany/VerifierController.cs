@@ -13,15 +13,14 @@ using System.Net.Http.Headers;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using VerifierInsuranceCompany.Services;
+using System.Net.Http.Json;
 
 namespace VerifierInsuranceCompany
 {
     [Route("api/[controller]/[action]")]
     public class VerifierController : Controller
     {
-        const string PRESENTATIONPAYLOAD = "presentation_request_config.json";
-
-        protected readonly CredentialSettings AppSettings;
+        protected readonly CredentialSettings _credentialSettings;
         protected IMemoryCache _cache;
         protected readonly ILogger<VerifierController> _log;
         private readonly VerifierService _verifierService;
@@ -33,7 +32,7 @@ namespace VerifierInsuranceCompany
             VerifierService verifierService,
             IHttpClientFactory httpClientFactory)
         {
-            this.AppSettings = appSettings.Value;
+            this._credentialSettings = appSettings.Value;
             _cache = memoryCache;
             _log = log;
             _verifierService = verifierService;
@@ -49,67 +48,10 @@ namespace VerifierInsuranceCompany
         {
             try
             {
-                string jsonString = null;
-                //they payload template is loaded from disk and modified in the code below to make it easier to get started
-                //and having all config in a central location appsettings.json. 
-                //if you want to manually change the payload in the json file make sure you comment out the code below which will modify it automatically
-                //
-                string payloadpath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), PRESENTATIONPAYLOAD);
-                _log.LogTrace("IssuanceRequest file: {0}", payloadpath);
-                if (!System.IO.File.Exists(payloadpath))
-                {
-                    _log.LogError("File not found: {0}", payloadpath);
-                    return BadRequest(new { error = "400", error_description = PRESENTATIONPAYLOAD + " not found" }); 
-                }
-                jsonString = System.IO.File.ReadAllText(payloadpath);
-                if (string.IsNullOrEmpty(jsonString)) 
-                {
-                    _log.LogError("Error reading file: {0}", payloadpath);
-                    return BadRequest(new { error = "400", error_description = PRESENTATIONPAYLOAD + " error reading file" }); 
-                }
-
-                string state = Guid.NewGuid().ToString();
-
-                //modify payload with new state, the state is used to be able to update the UI when callbacks are received from the VC Service
-                JObject payload = JObject.Parse(jsonString);
-                if (payload["callback"]["state"] != null)
-                {
-                    payload["callback"]["state"] = state;
-                }
-
-                //get the VerifierDID from the appsettings
-                if (payload["authority"] != null)
-                {
-                    payload["authority"] = AppSettings.VerifierAuthority;
-                }
-
-                //copy the issuerDID from the settings and fill in the trustedIssuer part of the payload
-                //this means only that issuer should be trusted for the requested credentialtype
-                //this value is an array in the payload, you can trust multiple issuers for the same credentialtype
-                //very common to accept the test VCs and the Production VCs coming from different verifiable credential services
-                if (payload["presentation"]["requestedCredentials"][0]["acceptedIssuers"][0] != null)
-                {
-                    payload["presentation"]["requestedCredentials"][0]["acceptedIssuers"][0] = AppSettings.IssuerAuthority;
-                }
-
-                //modify the callback method to make it easier to debug with tools like ngrok since the URI changes all the time
-                //this way you don't need to modify the callback URL in the payload every time ngrok changes the URI
-                if (payload["callback"]["url"] != null)
-                {
-                    //localhost hostname can't work for callbacks so we won't overwrite it.
-                    //this happens for example when testing with sign-in to an IDP and https://localhost is used as redirect URI
-                    //in that case the callback should be configured in the payload directly instead of being modified in the code here
-                    string host = _verifierService.GetRequestHostName(Request);
-                    if (!host.Contains("//localhost"))
-                    {
-                        payload["callback"]["url"] = String.Format("{0}:/api/verifier/presentationCallback", host);
-                    }
-                }
-
-                jsonString = JsonConvert.SerializeObject(payload);
+                var payload = _verifierService.GetVerifierRequestPayload(Request, HttpContext);
 
                 //CALL REST API WITH PAYLOAD
-                HttpStatusCode statusCode = HttpStatusCode.OK;
+                //HttpStatusCode statusCode = HttpStatusCode.OK;
                 string response = null;
                 try
                 {
@@ -125,17 +67,17 @@ namespace VerifierInsuranceCompany
                     var defaultRequestHeaders = _httpClient.DefaultRequestHeaders;
                     defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.Token);
 
-                    HttpResponseMessage res = await _httpClient.PostAsync(AppSettings.ApiEndpoint, new StringContent(jsonString, Encoding.UTF8, "application/json"));
+                    HttpResponseMessage res = await _httpClient.PostAsJsonAsync(
+                      _credentialSettings.ApiEndpoint, payload);
+
                     response = await res.Content.ReadAsStringAsync();
                     _log.LogTrace("succesfully called Request API");
 
-                    statusCode = res.StatusCode;
-
-                    if (statusCode == HttpStatusCode.Created)
+                    if (res.StatusCode == HttpStatusCode.Created)
                     {
                         JObject requestConfig = JObject.Parse(response);
-                        requestConfig.Add(new JProperty("id", state));
-                        jsonString = JsonConvert.SerializeObject(requestConfig);
+                        requestConfig.Add(new JProperty("id", payload.Callback.State));
+                        var jsonString = JsonConvert.SerializeObject(requestConfig);
 
                         //We use in memory cache to keep state about the request. The UI will check the state when calling the presentationResponse method
                     
@@ -145,7 +87,7 @@ namespace VerifierInsuranceCompany
                             Message = "Request ready, please scan with Authenticator",
                             Expiry = requestConfig["expiry"].ToString()
                         };
-                        _cache.Set(state, System.Text.Json.JsonSerializer.Serialize(cacheData));
+                        _cache.Set(payload.Callback.State, System.Text.Json.JsonSerializer.Serialize(cacheData));
 
                         //the response from the VC Request API call is returned to the caller (the UI). It contains the URI to the request which Authenticator can download after
                         //it has scanned the QR code. If the payload requested the VC Request service to create the QR code that is returned as well

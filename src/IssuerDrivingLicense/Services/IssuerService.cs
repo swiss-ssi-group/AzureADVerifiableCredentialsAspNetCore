@@ -25,6 +25,35 @@ namespace IssuerDrivingLicense
             _driverLicenseService = driverLicenseService;
         }
 
+        public async Task<IssuanceRequestPayload> GetIssuanceRequestPayloadAsync(HttpRequest request, HttpContext context)
+        {
+            var payload = new IssuanceRequestPayload();
+            var length = 4;
+            var pinMaxValue = (int)Math.Pow(10, length) - 1;
+            var randomNumber = RandomNumberGenerator.GetInt32(1, pinMaxValue);
+            var newpin = string.Format("{0:D" + length.ToString() + "}", randomNumber);
+
+            payload.Issuance.Pin.Length = 4;
+            payload.Issuance.Pin.Value = newpin;
+            payload.Issuance.CredentialsType = "MyDrivingLicense";
+            payload.Issuance.Manifest = _credentialSettings.CredentialManifest;
+
+            var host = GetRequestHostName(request);
+            payload.Callback.State = Guid.NewGuid().ToString();
+            payload.Callback.Url = $"{host}:/api/issuer/issuanceCallback";
+            payload.Callback.Headers.ApiKey = _credentialSettings.VcApiCallbackApiKey;
+
+            payload.Registration.ClientName = "Verifiable Credential NDL Sample";
+            payload.Authority = _credentialSettings.IssuerAuthority;
+
+            var driverLicense = await _driverLicenseService.GetDriverLicense(context.User.Identity.Name);
+
+            payload.Issuance.Claims.Name = $"{driverLicense.FirstName} {driverLicense.Name}  {driverLicense.UserName}";
+            payload.Issuance.Claims.Details = $"Type: {driverLicense.LicenseType} IssuedAt: {driverLicense.IssuedAt:yyyy-MM-dd}";
+
+            return payload;
+        }
+
         public async Task<(string Token, string Error, string ErrorDescription)> GetAccessToken()
         {
 
@@ -96,35 +125,6 @@ namespace IssuerDrivingLicense
                 hostname = string.Format("{0}://{1}", scheme, originalHost);
             else hostname = string.Format("{0}://{1}", scheme, request.Host);
             return hostname;
-        }
-
-        public async Task<IssuanceRequestPayload> GetIssuanceRequestPayloadAsync(HttpRequest request, HttpContext context)
-        {
-            var payload = new IssuanceRequestPayload();
-            var length = 4;
-            var pinMaxValue = (int)Math.Pow(10, length) - 1;
-            var randomNumber = RandomNumberGenerator.GetInt32(1, pinMaxValue);
-            var newpin = string.Format("{0:D" + length.ToString() + "}", randomNumber);
-
-            payload.Issuance.Pin.Length = 4;
-            payload.Issuance.Pin.Value = newpin;
-            payload.Issuance.CredentialsType = "MyDrivingLicense";
-            payload.Issuance.Manifest = _credentialSettings.CredentialManifest;
-
-            var host = GetRequestHostName(request);
-            payload.Callback.State = Guid.NewGuid().ToString();
-            payload.Callback.Url = string.Format("{0}:/api/issuer/issuanceCallback", host);
-            payload.Callback.Headers.ApiKey = _credentialSettings.VcApiCallbackApiKey;
-
-            payload.Registration.ClientName = "Verifiable Credential NDL Sample";
-            payload.Authority = _credentialSettings.IssuerAuthority;
-
-            var driverLicense = await _driverLicenseService.GetDriverLicense(context.User.Identity.Name);
-
-            payload.Issuance.Claims.Name = $"{driverLicense.FirstName} {driverLicense.Name}  {driverLicense.UserName}";
-            payload.Issuance.Claims.Details = $"Type: {driverLicense.LicenseType} IssuedAt: {driverLicense.IssuedAt:yyyy-MM-dd}";
-
-            return payload;
         }
     }
 }

@@ -46,7 +46,7 @@ namespace VerifierInsuranceCompany.Services
         [JsonPropertyName("includeReceipt")]
         public bool IncludeReceipt { get; set; }
         [JsonPropertyName("requestedCredentials")]
-        public RequestedCredentials RequestedCredentials { get; set; }
+        public RequestedCredentials RequestedCredentials { get; set; } = new RequestedCredentials();
     }
 
     public class RequestedCredentials

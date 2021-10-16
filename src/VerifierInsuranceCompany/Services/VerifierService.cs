@@ -26,7 +26,26 @@ namespace VerifierInsuranceCompany
             _log = log;
         }
 
-        //some helper functions
+        public VerifierRequestPayload GetVerifierRequestPayload(HttpRequest request, HttpContext context)
+        {
+            var payload = new VerifierRequestPayload();
+
+            var host = GetRequestHostName(request);
+            payload.Callback.State = Guid.NewGuid().ToString();
+            payload.Callback.Url = $"{host}:/api/verifier/presentationCallback";
+            payload.Callback.Headers.ApiKey = _credentialSettings.VcApiCallbackApiKey;
+
+            payload.Registration.ClientName = "Veriable Credential NDL Verifier";
+            payload.Registration.Purpose = "So we can see that you a veriable credentials NDL";
+            payload.Authority = _credentialSettings.VerifierAuthority;
+
+            payload.Presentation.RequestedCredentials.CrendentialsType = "MyDrivingLicense";
+            payload.Presentation.RequestedCredentials.Purpose = "So we can see that you a veriable credentials NDL";
+            payload.Presentation.RequestedCredentials.AcceptedIssuers.Add(_credentialSettings.IssuerAuthority);
+
+            return payload;
+        }
+
         public async Task<(string Token, string Error, string ErrorDescription)> GetAccessToken()
         {
             // You can run this sample using ClientSecret or Certificate. The code will differ only when instantiating the IConfidentialClientApplication
@@ -96,21 +115,6 @@ namespace VerifierInsuranceCompany
                 hostname = string.Format("{0}://{1}", scheme, originalHost);
             else hostname = string.Format("{0}://{1}", scheme, request.Host);
             return hostname;
-        }
-
-        public async Task<VerifierRequestPayload> GetVerifierRequestPayloadAsync(HttpRequest request, HttpContext context)
-        {
-            var payload = new VerifierRequestPayload();
-
-            var host = GetRequestHostName(request);
-            payload.Callback.State = Guid.NewGuid().ToString();
-            payload.Callback.Url = string.Format("{0}:/api/issuer/issuanceCallback", host);
-            payload.Callback.Headers.ApiKey = _credentialSettings.VcApiCallbackApiKey;
-
-            payload.Registration.ClientName = "Verifiable Credential NDL Sample";
-            payload.Authority = _credentialSettings.IssuerAuthority;
-
-            return payload;
         }
     }
 }
