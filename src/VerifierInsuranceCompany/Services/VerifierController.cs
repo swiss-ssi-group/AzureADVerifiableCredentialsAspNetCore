@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -11,6 +10,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using VerifierInsuranceCompany.Services;
 using System.Net.Http.Json;
+using System.Linq;
+using System.Text.Json;
 
 namespace VerifierInsuranceCompany
 {
@@ -76,7 +77,7 @@ namespace VerifierInsuranceCompany
                             Message = "Request ready, please scan with Authenticator",
                             Expiry = response.Expiry.ToString(),
                         };
-                        _cache.Set(payload.Callback.State, System.Text.Json.JsonSerializer.Serialize(cacheData));
+                        _cache.Set(payload.Callback.State, JsonSerializer.Serialize(cacheData));
 
                         //the response from the VC Request API call is returned to the caller (the UI). It contains the URI to the request which Authenticator can download after
                         //it has scanned the QR code. If the payload requested the VC Request service to create the QR code that is returned as well
@@ -103,47 +104,45 @@ namespace VerifierInsuranceCompany
         [HttpPost]
         public async Task<ActionResult> PresentationCallback()
         {
+            string content = await new System.IO.StreamReader(Request.Body).ReadToEndAsync();
+            VerifierCallbackResponse verifierCallbackResponse = JsonSerializer.Deserialize<VerifierCallbackResponse>(content);
+
             try
             {
-                string content = await new System.IO.StreamReader(this.Request.Body).ReadToEndAsync();
-                Debug.WriteLine("callback!: " + content);
-                JObject presentationResponse = JObject.Parse(content);
-                var state = presentationResponse["state"].ToString();
-
                 //there are 2 different callbacks. 1 if the QR code is scanned (or deeplink has been followed)
                 //Scanning the QR code makes Authenticator download the specific request from the server
                 //the request will be deleted from the server immediately.
                 //That's why it is so important to capture this callback and relay this to the UI so the UI can hide
                 //the QR code to prevent the user from scanning it twice (resulting in an error since the request is already deleted)
-                if (presentationResponse["code"].ToString() == VerifierConst.RequestRetrieved)
+                if (verifierCallbackResponse.Code == VerifierConst.RequestRetrieved)
                 {
                     var cacheData = new CacheData
                     {
                         Status = VerifierConst.RequestRetrieved,
                         Message = "QR Code is scanned. Waiting for validation...",
                     };
-                    _cache.Set(state, System.Text.Json.JsonSerializer.Serialize(cacheData));
+                    _cache.Set(verifierCallbackResponse.State, JsonSerializer.Serialize(cacheData));
                 }
 
                 // the 2nd callback is the result with the verified credential being verified.
                 // typically here is where the business logic is written to determine what to do with the result
                 // the response in this callback contains the claims from the Verifiable Credential(s) being presented by the user
                 // In this case the result is put in the in memory cache which is used by the UI when polling for the state so the UI can be updated.
-                if (presentationResponse["code"].ToString() == VerifierConst.PresentationVerified)
+                if (verifierCallbackResponse.Code == VerifierConst.PresentationVerified)
                 {
                     var cacheData = new CacheData
                     {
                         Status = VerifierConst.PresentationVerified,
                         Message = "Presentation verified",
-                        Payload = presentationResponse["issuers"].ToString(),
-                        Subject = presentationResponse["subject"].ToString(),
-                        Name = presentationResponse["issuers"][0]["claims"]["firstName"].ToString(),
-                        Details = presentationResponse["issuers"][0]["claims"]["lastName"].ToString()
+                        Payload = JsonSerializer.Serialize(verifierCallbackResponse.Issuers),
+                        Subject = verifierCallbackResponse.Subject,
+                        Name = verifierCallbackResponse.Issuers?.FirstOrDefault()?.Claims.Name,
+                        Details = verifierCallbackResponse.Issuers?.FirstOrDefault()?.Claims.Details
 
                     };
-                    _cache.Set(state, System.Text.Json.JsonSerializer.Serialize(cacheData));
+                    _cache.Set(verifierCallbackResponse.State, JsonSerializer.Serialize(cacheData));
                 }
-                
+
                 return Ok();
             }
             catch (Exception ex)
@@ -171,10 +170,10 @@ namespace VerifierInsuranceCompany
                 CacheData value = null;
                 if (_cache.TryGetValue(state, out string buf))
                 {
-                    value = System.Text.Json.JsonSerializer.Deserialize<CacheData>(buf);
+                    value = JsonSerializer.Deserialize<CacheData>(buf);
 
                     Debug.WriteLine("check if there was a response yet: " + value);
-                    return new ContentResult { ContentType = "application/json", Content = System.Text.Json.JsonSerializer.Serialize(value) };
+                    return new ContentResult { ContentType = "application/json", Content = JsonSerializer.Serialize(value) };
                 }
 
                 return Ok();
