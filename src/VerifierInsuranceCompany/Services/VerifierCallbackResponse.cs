@@ -51,9 +51,9 @@ namespace VerifierInsuranceCompany.Services
         /// <summary>
         /// attribute names need to match a claim from the id_token
         /// </summary>
-        [JsonPropertyName("firstName")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = string.Empty;
-        [JsonPropertyName("lastName")]
+        [JsonPropertyName("details")]
         public string Details { get; set; } = string.Empty;
     }
 }
