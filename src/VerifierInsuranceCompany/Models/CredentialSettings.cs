@@ -71,6 +71,9 @@ namespace VerifierInsuranceCompany
         /// (and identified by the CertificateName property belows)
         /// <remarks> 
         public string ClientSecret { get; set; }
+
+        public string VcApiCallbackApiKey { get; set; }
+
         /// <summary>
         /// Name of a certificate in the user certificate store
         /// </summary>

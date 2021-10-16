@@ -7,6 +7,7 @@ using Microsoft.Identity.Client;
 using Microsoft.Identity.Web;
 using System;
 using System.Threading.Tasks;
+using VerifierInsuranceCompany.Services;
 
 namespace VerifierInsuranceCompany
 {
@@ -95,6 +96,21 @@ namespace VerifierInsuranceCompany
                 hostname = string.Format("{0}://{1}", scheme, originalHost);
             else hostname = string.Format("{0}://{1}", scheme, request.Host);
             return hostname;
+        }
+
+        public async Task<VerifierRequestPayload> GetVerifierRequestPayloadAsync(HttpRequest request, HttpContext context)
+        {
+            var payload = new VerifierRequestPayload();
+
+            var host = GetRequestHostName(request);
+            payload.Callback.State = Guid.NewGuid().ToString();
+            payload.Callback.Url = string.Format("{0}:/api/issuer/issuanceCallback", host);
+            payload.Callback.Headers.ApiKey = _credentialSettings.VcApiCallbackApiKey;
+
+            payload.Registration.ClientName = "Verifiable Credential NDL Sample";
+            payload.Authority = _credentialSettings.IssuerAuthority;
+
+            return payload;
         }
     }
 }

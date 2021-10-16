@@ -27,7 +27,6 @@
         //You need to specify at least 1 trusted issuer DID, for this sample code we copy the IssuerAuthority from appsettings to the request
         "acceptedIssuers": [ "did:ion: copied from your VC portal in this sample the code copies it from APPSETTINGS.JSON" ]
       }
-
     ]
   }
 }
