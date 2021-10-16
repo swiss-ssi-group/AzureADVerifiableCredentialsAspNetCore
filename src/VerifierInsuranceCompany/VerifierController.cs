@@ -25,14 +25,19 @@ namespace VerifierInsuranceCompany
         protected IMemoryCache _cache;
         protected readonly ILogger<VerifierController> _log;
         private readonly VerifierService _verifierService;
+        private readonly HttpClient _httpClient;
 
         public VerifierController(IOptions<CredentialSettings> appSettings,
-            IMemoryCache memoryCache, ILogger<VerifierController> log, VerifierService verifierService)
+            IMemoryCache memoryCache, 
+            ILogger<VerifierController> log, 
+            VerifierService verifierService,
+            IHttpClientFactory httpClientFactory)
         {
             this.AppSettings = appSettings.Value;
             _cache = memoryCache;
             _log = log;
             _verifierService = verifierService;
+            _httpClient = httpClientFactory.CreateClient();
         }
 
         /// <summary>
@@ -117,14 +122,13 @@ namespace VerifierInsuranceCompany
                         return BadRequest(new { error = accessToken.Error, error_description = accessToken.ErrorDescription });
                     }
 
-                    HttpClient client = new HttpClient();
-                    var defaultRequestHeaders = client.DefaultRequestHeaders;
+                    var defaultRequestHeaders = _httpClient.DefaultRequestHeaders;
                     defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.Token);
 
-                    HttpResponseMessage res = await client.PostAsync(AppSettings.ApiEndpoint, new StringContent(jsonString, Encoding.UTF8, "application/json"));
+                    HttpResponseMessage res = await _httpClient.PostAsync(AppSettings.ApiEndpoint, new StringContent(jsonString, Encoding.UTF8, "application/json"));
                     response = await res.Content.ReadAsStringAsync();
                     _log.LogTrace("succesfully called Request API");
-                    client.Dispose();
+
                     statusCode = res.StatusCode;
 
                     if (statusCode == HttpStatusCode.Created)
@@ -212,10 +216,9 @@ namespace VerifierInsuranceCompany
 
                     };
                     _cache.Set(state, System.Text.Json.JsonSerializer.Serialize(cacheData));
-
                 }
                 
-                return new OkResult();
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -228,7 +231,7 @@ namespace VerifierInsuranceCompany
         //this method will respond with the status so the UI can reflect if the QR code was scanned and with the result of the presentation
         //
         [HttpGet("/api/verifier/presentation-response")]
-        public async Task<ActionResult> PresentationResponse()
+        public ActionResult PresentationResponse()
         {
             try
             {
@@ -245,17 +248,15 @@ namespace VerifierInsuranceCompany
                     value = JObject.Parse(buf);
 
                     Debug.WriteLine("check if there was a response yet: " + value);
-                    return new ContentResult { ContentType = "application/json", Content = JsonConvert.SerializeObject(value) }; 
+                    return new ContentResult { ContentType = "application/json", Content = JsonConvert.SerializeObject(value) };
                 }
 
-                return new OkResult();
+                return Ok();
             }
             catch (Exception ex)
             {
                 return BadRequest(new { error = "400", error_description = ex.Message });
             }
-
-
         }
     }
 }
