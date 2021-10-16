@@ -1,10 +1,5 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-using Microsoft.Extensions.Configuration;
-using Microsoft.Identity.Web;
-using System;
+﻿using Microsoft.Identity.Web;
 using System.Globalization;
-using System.IO;
 using System.Security.Cryptography.X509Certificates;
 
 namespace IssuerDrivingLicense
