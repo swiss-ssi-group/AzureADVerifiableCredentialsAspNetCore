@@ -29,6 +29,7 @@ namespace VerifierInsuranceCompany
 
             services.Configure<CredentialSettings>(Configuration.GetSection("CredentialSettings"));
 
+            services.AddHttpClient();
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {

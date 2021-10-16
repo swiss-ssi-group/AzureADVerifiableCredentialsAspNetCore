@@ -51,7 +51,7 @@ namespace VerifierInsuranceCompany
                 //The VC Request API is an authenticated API. We need to clientid and secret (or certificate) to create an access token which 
                 //needs to be send as bearer to the VC Request API
                 var accessToken = await _verifierService.GetAccessToken();
-                if (!string.IsNullOrEmpty(accessToken.Token))
+                if (string.IsNullOrEmpty(accessToken.Token))
                 {
                     _log.LogError($"failed to acquire accesstoken: {accessToken.Error} : {accessToken.ErrorDescription}");
                     return BadRequest(new { error = accessToken.Error, error_description = accessToken.ErrorDescription });
@@ -60,35 +60,37 @@ namespace VerifierInsuranceCompany
                 var defaultRequestHeaders = _httpClient.DefaultRequestHeaders;
                 defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.Token);
 
+                var data = System.Text.Json.JsonSerializer.Serialize(payload);
                 HttpResponseMessage res = await _httpClient.PostAsJsonAsync(
                     _credentialSettings.ApiEndpoint, payload);
 
-                var response = await res.Content.ReadFromJsonAsync<VerifierResponse>();
-                response.Id = payload.Callback.State;
-                _log.LogTrace("succesfully called Request API");
-
-                if (res.StatusCode == HttpStatusCode.Created)
+                if(res.IsSuccessStatusCode)
                 {
-                    var cacheData = new CacheData
+                    var response = await res.Content.ReadFromJsonAsync<VerifierResponse>();
+                    response.Id = payload.Callback.State;
+                    _log.LogTrace("succesfully called Request API");
+
+                    if (res.StatusCode == HttpStatusCode.Created)
                     {
-                        Status = VerifierConst.NotScanned,
-                        Message = "Request ready, please scan with Authenticator",
-                        Expiry = response.Expiry.ToString(),
-                    };
-                    _cache.Set(payload.Callback.State, System.Text.Json.JsonSerializer.Serialize(cacheData));
+                        var cacheData = new CacheData
+                        {
+                            Status = VerifierConst.NotScanned,
+                            Message = "Request ready, please scan with Authenticator",
+                            Expiry = response.Expiry.ToString(),
+                        };
+                        _cache.Set(payload.Callback.State, System.Text.Json.JsonSerializer.Serialize(cacheData));
 
-                    //the response from the VC Request API call is returned to the caller (the UI). It contains the URI to the request which Authenticator can download after
-                    //it has scanned the QR code. If the payload requested the VC Request service to create the QR code that is returned as well
-                    //the javascript in the UI will use that QR code to display it on the screen to the user.
+                        //the response from the VC Request API call is returned to the caller (the UI). It contains the URI to the request which Authenticator can download after
+                        //it has scanned the QR code. If the payload requested the VC Request service to create the QR code that is returned as well
+                        //the javascript in the UI will use that QR code to display it on the screen to the user.
 
-                    return Ok(response);
+                        return Ok(response);
+                    }
                 }
-                else
-                {
-                    _log.LogError("Unsuccesfully called Request API");
-                    return BadRequest(new { error = "400", error_description = "Something went wrong calling the API: " + response });
-                }
-    
+
+                var errorResponse = await res.Content.ReadAsStringAsync();
+                _log.LogError("Unsuccesfully called Request API");
+                return BadRequest(new { error = "400", error_description = "Something went wrong calling the API: " + errorResponse });
             }
             catch (Exception ex)
             {
