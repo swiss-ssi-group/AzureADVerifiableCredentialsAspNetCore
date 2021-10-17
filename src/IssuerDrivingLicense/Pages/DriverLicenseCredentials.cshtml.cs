@@ -11,9 +11,7 @@ namespace IssuerDrivingLicense.Pages
         public bool HasDriverLicense { get; set; } = false;
         public DriverLicense DriverLicense { get; set; }
 
-        public string CredentialOfferUrl { get; set; }
-        public DriverLicenseCredentialsModel(
-           DriverLicenseService driverLicenseService)
+        public DriverLicenseCredentialsModel(DriverLicenseService driverLicenseService)
         {
             _driverLicenseService = driverLicenseService;
         }
@@ -23,9 +21,7 @@ namespace IssuerDrivingLicense.Pages
 
             if (DriverLicense != null)
             {
-                var offerUrl = "TODO";
                 DriverLicenseMessage = "Add your driver license credentials to your wallet";
-                CredentialOfferUrl = offerUrl;
                 HasDriverLicense = true;
             }
             else
