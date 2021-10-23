@@ -22,7 +22,7 @@ namespace VerifierInsuranceCompany.Services
 
         [JsonPropertyName("issuers")]
         public List<Issuer>? Issuers { get; set; }
-       
+
     }
 
     public class CallbackError

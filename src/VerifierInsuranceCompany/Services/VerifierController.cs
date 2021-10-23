@@ -25,8 +25,8 @@ namespace VerifierInsuranceCompany
         private readonly HttpClient _httpClient;
 
         public VerifierController(IOptions<CredentialSettings> appSettings,
-            IMemoryCache memoryCache, 
-            ILogger<VerifierController> log, 
+            IMemoryCache memoryCache,
+            ILogger<VerifierController> log,
             VerifierService verifierService,
             IHttpClientFactory httpClientFactory)
         {
@@ -63,7 +63,7 @@ namespace VerifierInsuranceCompany
                 HttpResponseMessage res = await _httpClient.PostAsJsonAsync(
                     _credentialSettings.ApiEndpoint, payload);
 
-                if(res.IsSuccessStatusCode)
+                if (res.IsSuccessStatusCode)
                 {
                     var response = await res.Content.ReadFromJsonAsync<VerifierResponse>();
                     response.Id = payload.Callback.State;

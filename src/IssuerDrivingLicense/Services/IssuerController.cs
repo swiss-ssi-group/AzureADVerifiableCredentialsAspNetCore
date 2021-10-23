@@ -20,8 +20,8 @@ namespace IssuerDrivingLicense
         private readonly IssuerService _issuerService;
         private readonly HttpClient _httpClient;
 
-        public IssuerController(IOptions<CredentialSettings> credentialSettings, 
-            IMemoryCache memoryCache, 
+        public IssuerController(IOptions<CredentialSettings> credentialSettings,
+            IMemoryCache memoryCache,
             ILogger<IssuerController> log,
             IssuerService issuerService,
             IHttpClientFactory httpClientFactory)
@@ -60,22 +60,22 @@ namespace IssuerDrivingLicense
 
                     var response = await res.Content.ReadFromJsonAsync<IssuanceResponse>();
 
-                    if(response == null)
+                    if (response == null)
                     {
-                        return BadRequest(new { error = "400", error_description = "no response from VC API"});
+                        return BadRequest(new { error = "400", error_description = "no response from VC API" });
                     }
 
                     if (res.StatusCode == HttpStatusCode.Created)
                     {
                         _log.LogTrace("succesfully called Request API");
-             
-                        if (payload.Issuance.Pin.Value != null) 
+
+                        if (payload.Issuance.Pin.Value != null)
                         {
-                            response.Pin = payload.Issuance.Pin.Value; 
+                            response.Pin = payload.Issuance.Pin.Value;
                         }
 
                         response.Id = payload.Callback.State;
-       
+
                         var cacheData = new CacheData
                         {
                             Status = IssuanceConst.NotScanned,
@@ -183,7 +183,7 @@ namespace IssuerDrivingLicense
                 if (_cache.TryGetValue(state, out string buf))
                 {
                     value = JsonSerializer.Deserialize<CacheData>(buf);
-                    
+
                     Debug.WriteLine("check if there was a response yet: " + value);
                     return new ContentResult { ContentType = "application/json", Content = JsonSerializer.Serialize(value) };
                 }

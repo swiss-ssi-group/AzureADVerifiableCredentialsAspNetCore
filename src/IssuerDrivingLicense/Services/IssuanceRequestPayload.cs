@@ -7,7 +7,7 @@ namespace IssuerDrivingLicense.Services
         [JsonPropertyName("includeQRCode")]
         public bool IncludeQRCode { get; set; }
         [JsonPropertyName("callback")]
-        public Callback Callback { get; set; } = new Callback();    
+        public Callback Callback { get; set; } = new Callback();
         [JsonPropertyName("authority")]
         public string Authority { get; set; } = string.Empty;
         [JsonPropertyName("registration")]
@@ -46,10 +46,10 @@ namespace IssuerDrivingLicense.Services
         [JsonPropertyName("manifest")]
         public string Manifest { get; set; } = string.Empty;
         [JsonPropertyName("pin")]
-        public Pin Pin { get; set; } = new Pin();   
+        public Pin Pin { get; set; } = new Pin();
         [JsonPropertyName("claims")]
         public CredentialsClaims Claims { get; set; } = new CredentialsClaims();
-        
+
     }
 
     public class Pin

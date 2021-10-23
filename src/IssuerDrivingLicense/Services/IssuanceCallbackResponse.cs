@@ -12,6 +12,6 @@ namespace IssuerDrivingLicense.Services
         public string State { get; set; } = string.Empty;
         [JsonPropertyName("error")]
         public CallbackError? Error { get; set; }
-        
+
     }
 }

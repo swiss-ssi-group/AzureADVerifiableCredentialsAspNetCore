@@ -8,7 +8,7 @@ namespace VerifierInsuranceCompany.Services
         [JsonPropertyName("includeQRCode")]
         public bool IncludeQRCode { get; set; }
         [JsonPropertyName("callback")]
-        public Callback Callback { get; set; } = new Callback();    
+        public Callback Callback { get; set; } = new Callback();
         [JsonPropertyName("authority")]
         public string Authority { get; set; } = string.Empty;
         [JsonPropertyName("registration")]
@@ -46,7 +46,7 @@ namespace VerifierInsuranceCompany.Services
         [JsonPropertyName("includeReceipt")]
         public bool IncludeReceipt { get; set; }
         [JsonPropertyName("requestedCredentials")]
-        public List<RequestedCredentials> RequestedCredentials  { get; set; } = new List<RequestedCredentials>();
+        public List<RequestedCredentials> RequestedCredentials { get; set; } = new List<RequestedCredentials>();
     }
 
     public class RequestedCredentials
@@ -57,6 +57,6 @@ namespace VerifierInsuranceCompany.Services
         public string Purpose { get; set; } = string.Empty;
         [JsonPropertyName("acceptedIssuers")]
         public List<string> AcceptedIssuers { get; set; } = new List<string>();
-        
+
     }
 }
