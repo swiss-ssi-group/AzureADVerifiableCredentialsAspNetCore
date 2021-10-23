@@ -26,7 +26,7 @@
 
 ## Feedback in issuer app
 
-When running the issuer application, ngrok is used if you would like to receive feedback from the VC issuing through the callback. This requires a public IP. this IP needs to be added to the **Azure App Registration** as a redirect URL to authenticate. ngrok is only used for developement.
+When running the issuer application, ngrok is used if you would like to receive feedback from the VC issuing through the callback. This requires a public IP. The IP needs to be added to the **Azure App Registration** as a redirect URL to authenticate. ngrok is only used for development.
 
 ## Links
 

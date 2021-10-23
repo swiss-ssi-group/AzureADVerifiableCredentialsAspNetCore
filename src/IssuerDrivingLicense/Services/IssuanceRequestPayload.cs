@@ -59,15 +59,4 @@ namespace IssuerDrivingLicense.Services
         [JsonPropertyName("length")]
         public int Length { get; set; } = 4;
     }
-
-    public class CredentialsClaims
-    {
-        /// <summary>
-        /// attribute names need to match a claim from the id_token
-        /// </summary>
-        [JsonPropertyName("given_name")]
-        public string Name { get; set; } = string.Empty;
-        [JsonPropertyName("family_name")]
-        public string Details { get; set; } = string.Empty;
-    }
 }
