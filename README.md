@@ -3,6 +3,10 @@
 
 [![.NET](https://github.com/swiss-ssi-group/AzureADVerifiableCredentialsAspNetCore/actions/workflows/dotnet.yml/badge.svg)](https://github.com/swiss-ssi-group/AzureADVerifiableCredentialsAspNetCore/actions/workflows/dotnet.yml)
 
+## Blogs
+
+[Create and issuer verifiable credentials in ASP.NET Core using Azure AD](https://damienbod.com)
+
 ## User secrets Issuer, Verify
 
 ```
