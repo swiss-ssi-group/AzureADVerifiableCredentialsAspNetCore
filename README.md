@@ -28,6 +28,16 @@
 
 When running the issuer application, ngrok is used if you would like to receive feedback from the VC issuing through the callback. This requires a public IP. The IP needs to be added to the **Azure App Registration** as a redirect URL to authenticate. ngrok is only used for development.
 
+## CredentialsClaims
+
+The **CredentialsClaims** classes in both the issuer and the verifier are used to add the specific claims to the definition of the Azure VC credential.
+
+The classes must match the definitions. By changing these classes and the rules fields, different Azure verifiable credentials can be used.
+
+## GetIssuanceRequestPayloadAsync
+
+This method defines the specifics of the issue request payload. This would need to be changed, if you required no pin verification or other flows. See the Azure AD VC docs for more info.
+
 ## Links
 
 https://docs.microsoft.com/en-us/azure/active-directory/verifiable-credentials/
