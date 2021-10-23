@@ -9,7 +9,7 @@ namespace IssuerDrivingLicense.Pages.DriverLicenses
         private readonly DrivingLicenseDbContext _context;
 
         [FromQuery(Name = "id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         public string UserName { get; set; }
 

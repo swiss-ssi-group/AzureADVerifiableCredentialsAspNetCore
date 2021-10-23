@@ -45,15 +45,4 @@ namespace VerifierInsuranceCompany.Services
         public CredentialsClaims Claims { get; set; } = new CredentialsClaims();
 
     }
-
-    public class CredentialsClaims
-    {
-        /// <summary>
-        /// attribute names need to match a claim from the id_token
-        /// </summary>
-        [JsonPropertyName("name")]
-        public string Name { get; set; } = string.Empty;
-        [JsonPropertyName("details")]
-        public string Details { get; set; } = string.Empty;
-    }
 }
