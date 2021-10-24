@@ -46,7 +46,7 @@ This method defines the specifics of the issue request payload. This would need 
 
 ## Microsoft sample APP demo-code-from-microsoft-sample
 
-The **demo-code-from-microsoft-sample** is a second sample created directly from the Azure sample](https://github.com/Azure-Samples/active-directory-verifiable-credentials-dotnet)
+The **demo-code-from-microsoft-sample** is a second sample created directly from the Azure [sample](https://github.com/Azure-Samples/active-directory-verifiable-credentials-dotnet)
 
 This has only configuration changes for my tenant and VC definitions. Please refer to the sample repo for more info about this.
 
