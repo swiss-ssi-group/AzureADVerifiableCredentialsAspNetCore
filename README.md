@@ -5,7 +5,9 @@
 
 ## Blogs
 
-[Create and issuer verifiable credentials in ASP.NET Core using Azure AD](https://damienbod.com)
+- [Getting started with Self Sovereign Identity SSI](https://damienbod.com/2021/03/29/getting-started-with-self-sovereign-identity-ssi/) by Damien
+- [Challenges to Self Sovereign Identity](https://damienbod.com/2021/10/11/challenges-to-self-sovereign-identity/)
+- [Create and issuer verifiable credentials in ASP.NET Core using Azure AD](https://damienbod.com)
 
 ## User secrets Issuer, Verify
 
