@@ -1,5 +1,5 @@
 
-# Azure AD Verifiable Credentials using Azure AD and an id_token
+# ASP.NET Core Issuer and Verify Azure AD Verifiable Credentials 
 
 [![.NET](https://github.com/swiss-ssi-group/AzureADVerifiableCredentialsAspNetCore/actions/workflows/dotnet.yml/badge.svg)](https://github.com/swiss-ssi-group/AzureADVerifiableCredentialsAspNetCore/actions/workflows/dotnet.yml)
 
