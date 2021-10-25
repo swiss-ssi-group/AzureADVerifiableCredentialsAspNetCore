@@ -1,5 +1,5 @@
 
-# ASP.NET Core Issuer and Verify Azure AD Verifiable Credentials 
+# ASP.NET Core Issue and Verify Azure AD Verifiable Credentials 
 
 [![.NET](https://github.com/swiss-ssi-group/AzureADVerifiableCredentialsAspNetCore/actions/workflows/dotnet.yml/badge.svg)](https://github.com/swiss-ssi-group/AzureADVerifiableCredentialsAspNetCore/actions/workflows/dotnet.yml)
 
@@ -7,7 +7,7 @@
 
 - [Getting started with Self Sovereign Identity SSI](https://damienbod.com/2021/03/29/getting-started-with-self-sovereign-identity-ssi/)
 - [Challenges to Self Sovereign Identity](https://damienbod.com/2021/10/11/challenges-to-self-sovereign-identity/)
-- [Create and issuer verifiable credentials in ASP.NET Core using Azure AD](https://damienbod.com/2021/10/25/create-and-issuer-verifiable-credentials-in-asp-net-core-using-azure-ad/)
+- [Create and issue verifiable credentials in ASP.NET Core using Azure AD](https://damienbod.com/2021/10/25/create-and-issuer-verifiable-credentials-in-asp-net-core-using-azure-ad/)
 
 ## User secrets Issuer, Verify
 
