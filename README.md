@@ -9,6 +9,10 @@
 - [Challenges to Self Sovereign Identity](https://damienbod.com/2021/10/11/challenges-to-self-sovereign-identity/)
 - [Create and issuer verifiable credentials in ASP.NET Core using Azure AD](https://damienbod.com)
 
+## History
+
+2021-11-12 Updated to .NET 6 release
+
 ## User secrets Issuer, Verify
 
 ```
