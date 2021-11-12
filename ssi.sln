@@ -5,6 +5,7 @@ VisualStudioVersion = 17.0.31808.319
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FB81EB1A-BF50-4B90-BC82-30D7B5975DAD}"
 	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 		README.md = README.md
 		src\CredentialFiles\VerifiedCredentialNationalDrivingLicenseDisplay.json = src\CredentialFiles\VerifiedCredentialNationalDrivingLicenseDisplay.json
 		src\CredentialFiles\VerifiedCredentialNationalDrivingLicenseIdtokenRules.json = src\CredentialFiles\VerifiedCredentialNationalDrivingLicenseIdtokenRules.json
