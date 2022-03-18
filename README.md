@@ -11,6 +11,8 @@
 
 ## History
 
+2022-03-18 Updated code 
+
 2021-11-12 Updated to .NET 6 release
 
 ## User secrets Issuer, Verify

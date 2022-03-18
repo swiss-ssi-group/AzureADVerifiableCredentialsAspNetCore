@@ -20,6 +20,9 @@ namespace IssuerDrivingLicense
             DriverLicenseService driverLicenseService)
         {
             _credentialSettings = credentialSettings.Value;
+            if(_credentialSettings == null) 
+                _credentialSettings = new CredentialSettings();
+
             _cache = memoryCache;
             _log = log;
             _driverLicenseService = driverLicenseService;
@@ -46,10 +49,10 @@ namespace IssuerDrivingLicense
             payload.Registration.ClientName = "Verifiable Credential NDL Sample";
             payload.Authority = _credentialSettings.IssuerAuthority;
 
-            var driverLicense = await _driverLicenseService.GetDriverLicense(context.User.Identity.Name);
+            var driverLicense = await _driverLicenseService.GetDriverLicense(context.User?.Identity?.Name);
 
-            payload.Issuance.Claims.Name = $"{driverLicense.FirstName} {driverLicense.Name}  {driverLicense.UserName}";
-            payload.Issuance.Claims.Details = $"Type: {driverLicense.LicenseType} IssuedAt: {driverLicense.IssuedAt:yyyy-MM-dd}";
+            payload.Issuance.Claims.Name = $"{driverLicense?.FirstName} {driverLicense?.Name}  {driverLicense?.UserName}";
+            payload.Issuance.Claims.Details = $"Type: {driverLicense?.LicenseType} IssuedAt: {driverLicense?.IssuedAt:yyyy-MM-dd}";
 
             return payload;
         }
@@ -92,7 +95,7 @@ namespace IssuerDrivingLicense
             // a tenant administrator. 
             var scopes = new string[] { _credentialSettings.VCServiceScope };
 
-            AuthenticationResult result = null;
+            AuthenticationResult? result = null;
             try
             {
                 result = await app.AcquireTokenForClient(scopes)
@@ -112,7 +115,7 @@ namespace IssuerDrivingLicense
                 //return BadRequest(new { error = "500", error_description = "Something went wrong getting an access token for the client API:" + ex.Message });
             }
 
-            _log.LogTrace(result.AccessToken);
+            _log.LogTrace("{AccessToken}", result.AccessToken);
             return (result.AccessToken, string.Empty, string.Empty);
         }
 

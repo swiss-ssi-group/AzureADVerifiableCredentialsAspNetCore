@@ -12,7 +12,7 @@ namespace IssuerDrivingLicense.Persistence
         public string Name { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
         public DateTimeOffset DateOfBirth { get; set; }
-        public string Issuedby { get; set; } = string.Empty;
+        public string? Issuedby { get; set; } = string.Empty;
         public bool Valid { get; set; }
         public string DriverLicenseCredentials { get; set; } = string.Empty;
         public string LicenseType { get; set; } = string.Empty;

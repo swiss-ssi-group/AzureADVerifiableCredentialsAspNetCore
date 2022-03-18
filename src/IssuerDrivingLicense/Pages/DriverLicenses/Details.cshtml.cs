@@ -14,7 +14,7 @@ namespace IssuerDrivingLicense.Pages.DriverLicenses
             _context = context;
         }
 
-        public DriverLicense DriverLicense { get; set; }
+        public DriverLicense? DriverLicense { get; set; } = null;
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {

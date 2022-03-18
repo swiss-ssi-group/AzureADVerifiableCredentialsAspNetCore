@@ -29,7 +29,7 @@ namespace IssuerDrivingLicense
             return false;
         }
 
-        public async Task<DriverLicense> GetDriverLicense(string username)
+        public async Task<DriverLicense?> GetDriverLicense(string? username)
         {
             var driverLicense = await _DrivingLicenseDbContext.DriverLicenses.FirstOrDefaultAsync(
                     dl => dl.UserName == username && dl.Valid == true

@@ -48,7 +48,7 @@ namespace IssuerDrivingLicense
                     var (Token, Error, ErrorDescription) = await _issuerService.GetAccessToken();
                     if (string.IsNullOrEmpty(Token))
                     {
-                        _log.LogError($"failed to acquire accesstoken: {Error} : {ErrorDescription}");
+                        _log.LogError("failed to acquire accesstoken: {Error} : {ErrorDescription}", Error, ErrorDescription);
                         return BadRequest(new { error = Error, error_description = ErrorDescription });
                     }
 
@@ -106,7 +106,6 @@ namespace IssuerDrivingLicense
         /// <summary>
         /// This method is called by the VC Request API when the user scans a QR code and accepts the issued Verifiable Credential
         /// </summary>
-        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("/api/issuer/issuanceCallback")]
         public async Task<ActionResult> IssuanceCallback()
@@ -121,7 +120,7 @@ namespace IssuerDrivingLicense
                 //the request will be deleted from the server immediately.
                 //That's why it is so important to capture this callback and relay this to the UI so the UI can hide
                 //the QR code to prevent the user from scanning it twice (resulting in an error since the request is already deleted)
-                if (issuanceResponse.Code == IssuanceConst.RequestRetrieved)
+                if (issuanceResponse?.Code == IssuanceConst.RequestRetrieved)
                 {
                     var cacheData = new CacheData
                     {
@@ -131,7 +130,7 @@ namespace IssuerDrivingLicense
                     _cache.Set(issuanceResponse.State, JsonSerializer.Serialize(cacheData));
                 }
 
-                if (issuanceResponse.Code == IssuanceConst.IssuanceSuccessful)
+                if (issuanceResponse?.Code == IssuanceConst.IssuanceSuccessful)
                 {
                     var cacheData = new CacheData
                     {
@@ -141,7 +140,7 @@ namespace IssuerDrivingLicense
                     _cache.Set(issuanceResponse.State, JsonSerializer.Serialize(cacheData));
                 }
 
-                if (issuanceResponse.Code == IssuanceConst.IssuanceError)
+                if (issuanceResponse?.Code == IssuanceConst.IssuanceError)
                 {
                     var cacheData = new CacheData
                     {
@@ -162,11 +161,11 @@ namespace IssuerDrivingLicense
             }
         }
 
-        //
-        //this function is called from the UI polling for a response from the AAD VC Service.
-        //when a callback is recieved at the issuanceCallback service the session will be updated
-        //this method will respond with the status so the UI can reflect if the QR code was scanned and with the result of the issuance process
-        //
+        /// <summary>
+        /// this function is called from the UI polling for a response from the AAD VC Service.
+        /// when a callback is recieved at the issuanceCallback service the session will be updated
+        /// this method will respond with the status so the UI can reflect if the QR code was scanned and with the result of the issuance process
+        /// </summary>
         [HttpGet("/api/issuer/issuance-response")]
         public ActionResult IssuanceResponse()
         {
@@ -179,7 +178,7 @@ namespace IssuerDrivingLicense
                 {
                     return BadRequest(new { error = "400", error_description = "Missing argument 'id'" });
                 }
-                CacheData value = null;
+                CacheData? value = null;
                 if (_cache.TryGetValue(state, out string buf))
                 {
                     value = JsonSerializer.Deserialize<CacheData>(buf);

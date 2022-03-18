@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using IssuerDrivingLicense.Persistence;
 
@@ -15,7 +13,7 @@ namespace IssuerDrivingLicense
             _context = context;
         }
 
-        public List<DriverLicense> DriverLicenses { get; set; }
+        public List<DriverLicense> DriverLicenses { get; set; } = new List<DriverLicense>();
 
         public async Task OnGetAsync()
         {

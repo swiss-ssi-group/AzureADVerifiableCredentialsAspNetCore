@@ -10,14 +10,14 @@ namespace IssuerDrivingLicense.Pages.DriverLicenses
         private readonly DrivingLicenseDbContext _context;
 
         [FromQuery(Name = "id")]
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
 
         public UserModel(DrivingLicenseDbContext context)
         {
             _context = context;
         }
 
-        public IList<DriverLicense> DriverLicense { get; set; }
+        public IList<DriverLicense> DriverLicense { get; set; } = new List<DriverLicense>();
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
