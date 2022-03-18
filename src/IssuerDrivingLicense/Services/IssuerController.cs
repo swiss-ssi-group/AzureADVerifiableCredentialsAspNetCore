@@ -121,7 +121,7 @@ namespace IssuerDrivingLicense
                 //the request will be deleted from the server immediately.
                 //That's why it is so important to capture this callback and relay this to the UI so the UI can hide
                 //the QR code to prevent the user from scanning it twice (resulting in an error since the request is already deleted)
-                if (issuanceResponse.Code == IssuanceConst.RequestRetrieved)
+                if (issuanceResponse?.Code == IssuanceConst.RequestRetrieved)
                 {
                     var cacheData = new CacheData
                     {
@@ -131,7 +131,7 @@ namespace IssuerDrivingLicense
                     _cache.Set(issuanceResponse.State, JsonSerializer.Serialize(cacheData));
                 }
 
-                if (issuanceResponse.Code == IssuanceConst.IssuanceSuccessful)
+                if (issuanceResponse?.Code == IssuanceConst.IssuanceSuccessful)
                 {
                     var cacheData = new CacheData
                     {
@@ -141,7 +141,7 @@ namespace IssuerDrivingLicense
                     _cache.Set(issuanceResponse.State, JsonSerializer.Serialize(cacheData));
                 }
 
-                if (issuanceResponse.Code == IssuanceConst.IssuanceError)
+                if (issuanceResponse?.Code == IssuanceConst.IssuanceError)
                 {
                     var cacheData = new CacheData
                     {

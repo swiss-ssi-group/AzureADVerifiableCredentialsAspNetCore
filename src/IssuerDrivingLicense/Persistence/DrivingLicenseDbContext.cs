@@ -4,12 +4,9 @@ namespace IssuerDrivingLicense.Persistence
 {
     public class DrivingLicenseDbContext : DbContext
     {
-        public DbSet<DriverLicense> DriverLicenses { get; set; }
+        public DrivingLicenseDbContext(DbContextOptions<DrivingLicenseDbContext> options) : base(options) { }
 
-        public DrivingLicenseDbContext(DbContextOptions<DrivingLicenseDbContext> options)
-            : base(options)
-        {
-        }
+        public DbSet<DriverLicense> DriverLicenses => Set<DriverLicense>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

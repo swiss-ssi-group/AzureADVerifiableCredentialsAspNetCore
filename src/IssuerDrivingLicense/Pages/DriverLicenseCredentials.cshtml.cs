@@ -9,7 +9,7 @@ namespace IssuerDrivingLicense.Pages
 
         public string DriverLicenseMessage { get; set; } = "Loading credentials";
         public bool HasDriverLicense { get; set; } = false;
-        public DriverLicense DriverLicense { get; set; }
+        public DriverLicense? DriverLicense { get; set; }
 
         public DriverLicenseCredentialsModel(DriverLicenseService driverLicenseService)
         {
@@ -17,7 +17,7 @@ namespace IssuerDrivingLicense.Pages
         }
         public async Task OnGetAsync()
         {
-            DriverLicense = await _driverLicenseService.GetDriverLicense(HttpContext.User.Identity.Name);
+            DriverLicense = await _driverLicenseService.GetDriverLicense(HttpContext.User?.Identity?.Name);
 
             if (DriverLicense != null)
             {

@@ -11,7 +11,7 @@ namespace IssuerDrivingLicense.Pages.DriverLicenses
         [FromQuery(Name = "id")]
         public string? Id { get; set; }
 
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
 
         [BindProperty]
         public DriverLicense DriverLicense { get; set; } = new DriverLicense();
@@ -34,7 +34,7 @@ namespace IssuerDrivingLicense.Pages.DriverLicenses
                 return Page();
             }
 
-            DriverLicense.Issuedby = HttpContext.User.Identity.Name;
+            DriverLicense.Issuedby = HttpContext.User?.Identity?.Name;
             DriverLicense.IssuedAt = DateTimeOffset.UtcNow;
 
             _context.DriverLicenses.Add(DriverLicense);

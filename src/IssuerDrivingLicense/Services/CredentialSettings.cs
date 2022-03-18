@@ -13,33 +13,33 @@ namespace IssuerDrivingLicense
         /// <summary>
         /// instance of Azure AD, for example public Azure or a Sovereign cloud (Azure China, Germany, US government, etc ...)
         /// </summary>
-        public string Instance { get; set; }
+        public string Instance { get; set; } = string.Empty;
         /// <summary>
         /// URL of the client REST API endpoint, still need to use tenantID, use ApiEndpoint instead.
         /// </summary>
-        public string Endpoint { get; set; }
+        public string Endpoint { get; set; } = string.Empty;
         /// <summary>
         /// Web Api scope. With client credentials flows, the scopes is ALWAYS of the shape "resource/.default"
         /// FUTURE THIS WILL CHANGE TO MS GRAPH SCOPE
         /// </summary>
-        public string VCServiceScope { get; set; }
+        public string VCServiceScope { get; set; } = string.Empty;
 
-        public string CredentialManifest { get; set; }
+        public string CredentialManifest { get; set; } = string.Empty;
 
-        public string IssuerAuthority { get; set; }
+        public string IssuerAuthority { get; set; } = string.Empty;
 
-        public string VerifierAuthority { get; set; }
+        public string VerifierAuthority { get; set; } = string.Empty;
         /// <summary>
         /// The Tenant is:
         /// - either the tenant ID of the Azure AD tenant in which this application is registered (a guid)
         /// or a domain name associated with the tenant
         /// - or 'organizations' (for a multi-tenant application)
         /// </summary>
-        public string TenantId { get; set; }
+        public string TenantId { get; set; } = string.Empty;
         /// <summary>
         /// Guid used by the application to uniquely identify itself to Azure AD
         /// </summary>
-        public string ClientId { get; set; }
+        public string ClientId { get; set; } = string.Empty;
         /// <summary>
         /// URL of the authority
         /// </summary>
@@ -65,7 +65,7 @@ namespace IssuerDrivingLicense
         /// or a certificate previously shared with AzureAD during the application registration 
         /// (and identified by the CertificateName property belows)
         /// <remarks> 
-        public string ClientSecret { get; set; }
+        public string ClientSecret { get; set; } = string.Empty;
         /// <summary>
         /// Name of a certificate in the user certificate store
         /// </summary>
@@ -74,9 +74,9 @@ namespace IssuerDrivingLicense
         /// or a certificate previously shared with AzureAD during the application registration 
         /// (and identified by this CertificateName property)
         /// <remarks> 
-        public string CertificateName { get; set; }
+        public string CertificateName { get; set; } = string.Empty;
 
-        public string VcApiCallbackApiKey { get; set; }
+        public string VcApiCallbackApiKey { get; set; } = string.Empty;
 
         /// <summary>
         /// Checks if the sample is configured for using ClientSecret or Certificate. This method is just for the sake of this sample.
@@ -102,7 +102,7 @@ namespace IssuerDrivingLicense
             else
                 throw new Exception("You must choose between using client secret or certificate. Please update appsettings.json file.");
         }
-        public X509Certificate2 ReadCertificate(string certificateName)
+        public X509Certificate2? ReadCertificate(string certificateName)
         {
             if (string.IsNullOrWhiteSpace(certificateName))
             {
@@ -111,7 +111,7 @@ namespace IssuerDrivingLicense
             var certificateDescription = CertificateDescription.FromStoreWithDistinguishedName(certificateName);
             var defaultCertificateLoader = new DefaultCertificateLoader();
             defaultCertificateLoader.LoadIfNeeded(certificateDescription);
-            return certificateDescription.Certificate;
+            return certificateDescription?.Certificate;
         }
     }
 
