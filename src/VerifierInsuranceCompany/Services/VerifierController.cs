@@ -46,19 +46,20 @@ namespace VerifierInsuranceCompany
         {
             try
             {
-                var payload = _verifierService.GetVerifierRequestPayload(Request, HttpContext);
+                var payload = _verifierService.GetVerifierRequestPayload(Request);
 
                 //The VC Request API is an authenticated API. We need to clientid and secret (or certificate) to create an access token which 
                 //needs to be send as bearer to the VC Request API
-                var accessToken = await _verifierService.GetAccessToken();
-                if (string.IsNullOrEmpty(accessToken.Token))
+                var (Token, Error, ErrorDescription) = await _verifierService.GetAccessToken();
+
+                if (string.IsNullOrEmpty(Token))
                 {
-                    _log.LogError($"failed to acquire accesstoken: {accessToken.Error} : {accessToken.ErrorDescription}");
-                    return BadRequest(new { error = accessToken.Error, error_description = accessToken.ErrorDescription });
+                    _log.LogError("failed to acquire accesstoken: {Error} : {ErrorDescription}", Error, ErrorDescription);
+                    return BadRequest(new { error = Error, error_description = ErrorDescription });
                 }
 
                 var defaultRequestHeaders = _httpClient.DefaultRequestHeaders;
-                defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.Token);
+                defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
 
                 HttpResponseMessage res = await _httpClient.PostAsJsonAsync(
                     _credentialSettings.ApiEndpoint, payload);

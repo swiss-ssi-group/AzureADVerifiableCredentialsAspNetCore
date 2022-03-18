@@ -115,7 +115,7 @@ namespace IssuerDrivingLicense
                 //return BadRequest(new { error = "500", error_description = "Something went wrong getting an access token for the client API:" + ex.Message });
             }
 
-            _log.LogTrace(result.AccessToken);
+            _log.LogTrace("{AccessToken}", result.AccessToken);
             return (result.AccessToken, string.Empty, string.Empty);
         }
 

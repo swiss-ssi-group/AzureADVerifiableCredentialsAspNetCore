@@ -26,7 +26,7 @@ namespace VerifierInsuranceCompany
             _log = log;
         }
 
-        public VerifierRequestPayload GetVerifierRequestPayload(HttpRequest request, HttpContext context)
+        public VerifierRequestPayload GetVerifierRequestPayload(HttpRequest request)
         {
             var payload = new VerifierRequestPayload();
 
@@ -107,18 +107,18 @@ namespace VerifierInsuranceCompany
                 //return BadRequest(new { error = "500", error_description = "Something went wrong getting an access token for the client API:" + ex.Message });
             }
 
-            _log.LogTrace(result.AccessToken);
+            _log.LogTrace("{AccessToken}", result.AccessToken);
             return (result.AccessToken, string.Empty, string.Empty);
         }
         public string GetRequestHostName(HttpRequest request)
         {
             string scheme = "https";// : this.Request.Scheme;
             string originalHost = request.Headers["x-original-host"];
-            string hostname = "";
+
             if (!string.IsNullOrEmpty(originalHost))
-                hostname = string.Format("{0}://{1}", scheme, originalHost);
-            else hostname = string.Format("{0}://{1}", scheme, request.Host);
-            return hostname;
+                return string.Format("{0}://{1}", scheme, originalHost);
+            else 
+                return string.Format("{0}://{1}", scheme, request.Host);
         }
     }
 }
