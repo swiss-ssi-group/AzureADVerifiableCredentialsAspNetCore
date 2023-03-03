@@ -173,7 +173,7 @@ namespace IssuerDrivingLicense
             {
                 //the id is the state value initially created when the issuanc request was requested from the request API
                 //the in-memory database uses this as key to get and store the state of the process so the UI can be updated
-                string state = this.Request.Query["id"];
+                string? state = Request.Query["id"];
                 if (string.IsNullOrEmpty(state))
                 {
                     return BadRequest(new { error = "400", error_description = "Missing argument 'id'" });
