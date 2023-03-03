@@ -1,18 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace IssuerDrivingLicense.Persistence
+namespace IssuerDrivingLicense.Persistence;
+
+public class DrivingLicenseDbContext : DbContext
 {
-    public class DrivingLicenseDbContext : DbContext
+    public DrivingLicenseDbContext(DbContextOptions<DrivingLicenseDbContext> options) : base(options) { }
+
+    public DbSet<DriverLicense> DriverLicenses => Set<DriverLicense>();
+
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        public DrivingLicenseDbContext(DbContextOptions<DrivingLicenseDbContext> options) : base(options) { }
+        builder.Entity<DriverLicense>().HasKey(m => m.Id);
 
-        public DbSet<DriverLicense> DriverLicenses => Set<DriverLicense>();
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.Entity<DriverLicense>().HasKey(m => m.Id);
-
-            base.OnModelCreating(builder);
-        }
+        base.OnModelCreating(builder);
     }
 }

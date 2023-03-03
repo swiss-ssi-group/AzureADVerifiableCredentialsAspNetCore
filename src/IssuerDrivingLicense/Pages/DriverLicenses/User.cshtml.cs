@@ -3,36 +3,35 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using IssuerDrivingLicense.Persistence;
 
-namespace IssuerDrivingLicense.Pages.DriverLicenses
+namespace IssuerDrivingLicense.Pages.DriverLicenses;
+
+public class UserModel : PageModel
 {
-    public class UserModel : PageModel
+    private readonly DrivingLicenseDbContext _context;
+
+    [FromQuery(Name = "id")]
+    public string? UserName { get; set; }
+
+    public UserModel(DrivingLicenseDbContext context)
     {
-        private readonly DrivingLicenseDbContext _context;
+        _context = context;
+    }
 
-        [FromQuery(Name = "id")]
-        public string? UserName { get; set; }
+    public IList<DriverLicense> DriverLicense { get; set; } = new List<DriverLicense>();
 
-        public UserModel(DrivingLicenseDbContext context)
+    public async Task<IActionResult> OnGetAsync(string id)
+    {
+        if (id == null)
         {
-            _context = context;
+            return NotFound();
         }
+        UserName = id;
 
-        public IList<DriverLicense> DriverLicense { get; set; } = new List<DriverLicense>();
+        DriverLicense = await _context.DriverLicenses
+            .AsQueryable()
+            .Where(item => item.UserName == id)
+            .ToListAsync();
 
-        public async Task<IActionResult> OnGetAsync(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            UserName = id;
-
-            DriverLicense = await _context.DriverLicenses
-                .AsQueryable()
-                .Where(item => item.UserName == id)
-                .ToListAsync();
-
-            return Page();
-        }
+        return Page();
     }
 }

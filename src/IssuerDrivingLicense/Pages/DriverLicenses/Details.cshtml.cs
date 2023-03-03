@@ -3,34 +3,33 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using IssuerDrivingLicense.Persistence;
 
-namespace IssuerDrivingLicense.Pages.DriverLicenses
+namespace IssuerDrivingLicense.Pages.DriverLicenses;
+
+public class DetailsModel : PageModel
 {
-    public class DetailsModel : PageModel
+    private readonly DrivingLicenseDbContext _context;
+
+    public DetailsModel(DrivingLicenseDbContext context)
     {
-        private readonly DrivingLicenseDbContext _context;
+        _context = context;
+    }
 
-        public DetailsModel(DrivingLicenseDbContext context)
+    public DriverLicense? DriverLicense { get; set; } = null;
+
+    public async Task<IActionResult> OnGetAsync(Guid? id)
+    {
+        if (id == null)
         {
-            _context = context;
+            return NotFound();
         }
 
-        public DriverLicense? DriverLicense { get; set; } = null;
+        DriverLicense = await _context.DriverLicenses.FirstOrDefaultAsync(m => m.Id == id);
 
-        public async Task<IActionResult> OnGetAsync(Guid? id)
+        if (DriverLicense == null)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            DriverLicense = await _context.DriverLicenses.FirstOrDefaultAsync(m => m.Id == id);
-
-            if (DriverLicense == null)
-            {
-                return NotFound();
-            }
-
-            return Page();
+            return NotFound();
         }
+
+        return Page();
     }
 }

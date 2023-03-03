@@ -3,87 +3,86 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using IssuerDrivingLicense.Persistence;
 
-namespace IssuerDrivingLicense.Pages.DriverLicenses
-{
-    public class EditModel : PageModel
-    {
-        private readonly DrivingLicenseDbContext _context;
+namespace IssuerDrivingLicense.Pages.DriverLicenses;
 
-        public EditModel(DrivingLicenseDbContext context)
+public class EditModel : PageModel
+{
+    private readonly DrivingLicenseDbContext _context;
+
+    public EditModel(DrivingLicenseDbContext context)
+    {
+        _context = context;
+    }
+
+    [BindProperty]
+    public UpdateDriverLicense? DriverLicense { get; set; } = null;
+
+    public async Task<IActionResult> OnGetAsync(Guid? id)
+    {
+        if (id == null)
         {
-            _context = context;
+            return NotFound();
         }
 
-        [BindProperty]
-        public UpdateDriverLicense? DriverLicense { get; set; } = null;
+        var driverLicence = await _context.DriverLicenses.FirstOrDefaultAsync(m => m.Id == id);
 
-        public async Task<IActionResult> OnGetAsync(Guid? id)
+        if (driverLicence == null)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            return NotFound();
+        }
 
-            var driverLicence = await _context.DriverLicenses.FirstOrDefaultAsync(m => m.Id == id);
+        DriverLicense = new UpdateDriverLicense
+        {
+            Id = driverLicence.Id,
+            FirstName = driverLicence.FirstName,
+            Name = driverLicence.Name,
+            UserName = driverLicence.UserName,
+            Valid = driverLicence.Valid
+        };
 
-            if (driverLicence == null)
-            {
-                return NotFound();
-            }
+        return Page();
+    }
 
-            DriverLicense = new UpdateDriverLicense
-            {
-                Id = driverLicence.Id,
-                FirstName = driverLicence.FirstName,
-                Name = driverLicence.Name,
-                UserName = driverLicence.UserName,
-                Valid = driverLicence.Valid
-            };
-
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid)
+        {
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        if (DriverLicense != null)
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+            var existingDriverLicense = await _context.DriverLicenses.FirstOrDefaultAsync(m => m.Id == DriverLicense.Id);
+            
+            if (existingDriverLicense == null)
+                return NotFound();
 
-            if (DriverLicense != null)
+            existingDriverLicense.Valid = DriverLicense.Valid;
+
+            try
             {
-                var existingDriverLicense = await _context.DriverLicenses.FirstOrDefaultAsync(m => m.Id == DriverLicense.Id);
-                
-                if (existingDriverLicense == null)
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!DriverLicenceExists(DriverLicense.Id))
+                {
                     return NotFound();
-
-                existingDriverLicense.Valid = DriverLicense.Valid;
-
-                try
-                {
-                    await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!DriverLicenceExists(DriverLicense.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-
-                return RedirectToPage("./User", new { id = existingDriverLicense.UserName });
             }
 
-            return BadRequest("No model");
+            return RedirectToPage("./User", new { id = existingDriverLicense.UserName });
         }
 
-        private bool DriverLicenceExists(Guid id)
-        {
-            return _context.DriverLicenses.Any(e => e.Id == id);
-        }
+        return BadRequest("No model");
+    }
+
+    private bool DriverLicenceExists(Guid id)
+    {
+        return _context.DriverLicenses.Any(e => e.Id == id);
     }
 }
