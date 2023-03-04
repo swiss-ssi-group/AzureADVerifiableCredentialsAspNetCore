@@ -11,7 +11,7 @@
 
 ## History
 
-2023-03-03 Updated to .NET 7
+2023-03-03 Updated to .NET 7, Update AAD VC service with all the breaking changes
 
 2022-03-18 Updated code 
 
