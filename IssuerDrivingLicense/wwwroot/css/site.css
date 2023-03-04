@@ -1,0 +1,30 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.paddingright5px {
+    padding-right: 5px;
+}
+
+.big_checkbox {
+    width: 30px !important;
+    height: 30px !important;
+}
+
+
+

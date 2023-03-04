@@ -11,6 +11,8 @@
 
 ## History
 
+2023-03-03 Updated to .NET 7
+
 2022-03-18 Updated code 
 
 2021-11-12 Updated to .NET 6 release
