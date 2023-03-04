@@ -1,22 +1,22 @@
-﻿using IssuerDrivingLicense.Persistence;
+using IssuerDrivingLicense.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace IssuerDrivingLicense;
 
 public class DriverLicenseService
 {
-    private readonly DrivingLicenseDbContext _DrivingLicenseDbContext;
+    private readonly DrivingLicenseDbContext _drivingLicenseDbContext;
 
     public DriverLicenseService(DrivingLicenseDbContext DrivingLicenseDbContext)
     {
-        _DrivingLicenseDbContext = DrivingLicenseDbContext;
+        _drivingLicenseDbContext = DrivingLicenseDbContext;
     }
 
     public async Task<bool> HasIdentityDriverLicense(string username)
     {
         if (!string.IsNullOrEmpty(username))
         {
-            var driverLicense = await _DrivingLicenseDbContext.DriverLicenses.FirstOrDefaultAsync(
+            var driverLicense = await _drivingLicenseDbContext.DriverLicenses.FirstOrDefaultAsync(
                 dl => dl.UserName == username && dl.Valid == true
             );
 
@@ -31,7 +31,7 @@ public class DriverLicenseService
 
     public async Task<DriverLicense?> GetDriverLicense(string? username)
     {
-        var driverLicense = await _DrivingLicenseDbContext.DriverLicenses.FirstOrDefaultAsync(
+        var driverLicense = await _drivingLicenseDbContext.DriverLicenses.FirstOrDefaultAsync(
                 dl => dl.UserName == username && dl.Valid == true
             );
 
@@ -40,7 +40,7 @@ public class DriverLicenseService
 
     public async Task UpdateDriverLicense(DriverLicense driverLicense)
     {
-        _DrivingLicenseDbContext.DriverLicenses.Update(driverLicense);
-        await _DrivingLicenseDbContext.SaveChangesAsync();
+        _drivingLicenseDbContext.DriverLicenses.Update(driverLicense);
+        await _drivingLicenseDbContext.SaveChangesAsync();
     }
 }
