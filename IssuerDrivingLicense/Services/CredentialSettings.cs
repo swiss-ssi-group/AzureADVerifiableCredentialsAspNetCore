@@ -3,10 +3,6 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace IssuerDrivingLicense;
 
-/// <summary>
-/// Description of the configuration of an AzureAD confidential client application. This should
-/// match the application registration done in the Azure portal
-/// </summary>
 public class CredentialSettings
 {
     public string TenantId { get; set; } = string.Empty;
@@ -16,14 +12,7 @@ public class CredentialSettings
     public string CertificateName { get; set; } = string.Empty;
     public string Instance { get; set; } = string.Empty;
 
-    /// <summary>
-    /// URL of the client REST API endpoint, still need to use tenantID, use ApiEndpoint instead.
-    /// </summary>
     public string Endpoint { get; set; } = string.Empty;
-    /// <summary>
-    /// Web Api scope. With client credentials flows, the scopes is ALWAYS of the shape "resource/.default"
-    /// FUTURE THIS WILL CHANGE TO MS GRAPH SCOPE
-    /// </summary>
     public string VCServiceScope { get; set; } = "3db474b9-6a0c-4840-96ac-1fceb342124f/.default";
     public string CredentialManifest { get; set; } = string.Empty;
     public string IssuerAuthority { get; set; } = string.Empty;
@@ -68,6 +57,3 @@ public class CredentialSettings
         return certificateDescription?.Certificate;
     }
 }
-
-
-
