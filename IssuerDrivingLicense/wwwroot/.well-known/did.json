@@ -1,0 +1,48 @@
+{
+  "id": "did:web:damienbodsharepointissuer.azurewebsites.net",
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    {
+      "@base": "did:web:damienbodsharepointissuer.azurewebsites.net"
+    }
+  ],
+  "service": [
+    {
+      "id": "#linkeddomains",
+      "type": "LinkedDomains",
+      "serviceEndpoint": {
+        "origins": [
+          "https://damienbodsharepointissuer.azurewebsites.net/"
+        ]
+      }
+    },
+    {
+      "id": "#hub",
+      "type": "IdentityHub",
+      "serviceEndpoint": {
+        "instances": [
+          "https://hub.did.msidentity.com/v1.0/5698af84-5720-4ff0-bdc3-9d9195314244"
+        ]
+      }
+    }
+  ],
+  "verificationMethod": [
+    {
+      "id": "#8f3b5a390e924453a94021002c1802ebvcSigningKey-1bade",
+      "controller": "did:web:damienbodsharepointissuer.azurewebsites.net",
+      "type": "EcdsaSecp256k1VerificationKey2019",
+      "publicKeyJwk": {
+        "crv": "secp256k1",
+        "kty": "EC",
+        "x": "Mp-mxFar1iUsbvs9SNA_kGvRn2uS3ueV6qsXaGtznTA",
+        "y": "oNcZqeRXhmZlGdrPf9Td0soSbqu7mFnrVA3YeA3LSC0"
+      }
+    }
+  ],
+  "authentication": [
+    "#8f3b5a390e924453a94021002c1802ebvcSigningKey-1bade"
+  ],
+  "assertionMethod": [
+    "#8f3b5a390e924453a94021002c1802ebvcSigningKey-1bade"
+  ]
+}
