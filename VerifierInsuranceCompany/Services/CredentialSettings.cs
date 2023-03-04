@@ -1,7 +1,7 @@
 ﻿using Microsoft.Identity.Web;
 using System.Security.Cryptography.X509Certificates;
 
-namespace IssuerDrivingLicense;
+namespace VerifierInsuranceCompany;
 
 public class CredentialSettings
 {

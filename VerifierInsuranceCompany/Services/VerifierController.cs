@@ -56,7 +56,7 @@ public class VerifierController : Controller
             defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
 
             HttpResponseMessage res = await _httpClient.PostAsJsonAsync(
-                _credentialSettings.ApiEndpoint, payload);
+                _credentialSettings.Endpoint, payload);
 
             if (res.IsSuccessStatusCode)
             {
