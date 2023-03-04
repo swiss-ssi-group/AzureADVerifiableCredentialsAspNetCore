@@ -55,8 +55,7 @@ public class IssuerController : ControllerBase
                 var defaultRequestHeaders = _httpClient.DefaultRequestHeaders;
                 defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
 
-                HttpResponseMessage res = await _httpClient.PostAsJsonAsync(
-                    _credentialSettings.Endpoint, payload);
+                var res = await _httpClient.PostAsJsonAsync(_credentialSettings.Endpoint, payload);
 
                 var response = await res.Content.ReadFromJsonAsync<IssuanceResponse>();
 
@@ -88,7 +87,9 @@ public class IssuerController : ControllerBase
                 }
                 else
                 {
-                    _log.LogError("Unsuccesfully called Request API");
+                    var message = await res.Content.ReadAsStringAsync();
+
+                    _log.LogError("Unsuccesfully called Request API {message}", message);
                     return BadRequest(new { error = "400", error_description = "Something went wrong calling the API: " + response });
                 }
             }
