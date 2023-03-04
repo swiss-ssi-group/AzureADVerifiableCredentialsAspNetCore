@@ -8,7 +8,7 @@ namespace IssuerDrivingLicense.Pages
         private readonly DriverLicenseService _driverLicenseService;
 
         public string DriverLicenseMessage { get; set; } = "Loading credentials";
-        public bool HasDriverLicense { get; set; } = false;
+        public bool HasDriverLicense { get; set; }
         public DriverLicense? DriverLicense { get; set; }
 
         public DriverLicenseCredentialsModel(DriverLicenseService driverLicenseService)

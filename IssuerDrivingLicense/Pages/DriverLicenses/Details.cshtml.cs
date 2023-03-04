@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using IssuerDrivingLicense.Persistence;
@@ -14,7 +14,7 @@ public class DetailsModel : PageModel
         _context = context;
     }
 
-    public DriverLicense? DriverLicense { get; set; } = null;
+    public DriverLicense? DriverLicense { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid? id)
     {

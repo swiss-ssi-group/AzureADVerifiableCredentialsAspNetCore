@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Web;
@@ -48,7 +48,7 @@ public class VerifierService
     public async Task<(string Token, string Error, string ErrorDescription)> GetAccessToken()
     {
         // You can run this sample using ClientSecret or Certificate. The code will differ only when instantiating the IConfidentialClientApplication
-        bool isUsingClientSecret = _credentialSettings.AppUsesClientSecret(_credentialSettings);
+        var isUsingClientSecret = _credentialSettings.AppUsesClientSecret(_credentialSettings);
 
         // Since we are using application permissions this will be a confidential client application
         IConfidentialClientApplication app;
@@ -80,7 +80,7 @@ public class VerifierService
         // With client credentials flows the scopes is ALWAYS of the shape "resource/.default", as the 
         // application permissions need to be set statically (in the portal or by PowerShell), and then granted by
         // a tenant administrator. 
-        string[] scopes = new string[] { _credentialSettings.VCServiceScope };
+        var scopes = new string[] { _credentialSettings.VCServiceScope };
 
         AuthenticationResult? result = null;
         try
@@ -105,14 +105,18 @@ public class VerifierService
         _log.LogTrace("{AccessToken}", result.AccessToken);
         return (result.AccessToken, string.Empty, string.Empty);
     }
+
     public string GetRequestHostName(HttpRequest request)
     {
         var scheme = "https";// : this.Request.Scheme;
-        string? originalHost = request.Headers["x-original-host"];
-
+        var originalHost = request.Headers["x-original-host"];
         if (!string.IsNullOrEmpty(originalHost))
-            return string.Format("{0}://{1}", scheme, originalHost);
-        else 
-            return string.Format("{0}://{1}", scheme, request.Host);
+        {
+            return $"{scheme}://{originalHost}";
+        }
+        else
+        {
+            return $"{scheme}://{request.Host}";
+        }
     }
 }

@@ -1,8 +1,9 @@
-﻿using IssuerDrivingLicense.Services;
+using IssuerDrivingLicense.Services;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Web;
+using System.Globalization;
 using System.Security.Cryptography;
 
 namespace IssuerDrivingLicense;
@@ -60,7 +61,7 @@ public class IssuerService
     {
 
         // You can run this sample using ClientSecret or Certificate. The code will differ only when instantiating the IConfidentialClientApplication
-        bool isUsingClientSecret = _credentialSettings.AppUsesClientSecret(_credentialSettings);
+        var isUsingClientSecret = _credentialSettings.AppUsesClientSecret(_credentialSettings);
 
         // Since we are using application permissions this will be a confidential client application
         IConfidentialClientApplication app;
@@ -120,12 +121,15 @@ public class IssuerService
 
     public string GetRequestHostName(HttpRequest request)
     {
-        string scheme = "https";// : this.Request.Scheme;
-        string? originalHost = request.Headers["x-original-host"];
-        string hostname;
+        var scheme = "https";// : this.Request.Scheme;
+        var originalHost = request.Headers["x-original-host"];
         if (!string.IsNullOrEmpty(originalHost))
-            hostname = string.Format("{0}://{1}", scheme, originalHost);
-        else hostname = string.Format("{0}://{1}", scheme, request.Host);
-        return hostname;
+        {
+            return $"{scheme}://{originalHost}";
+        }
+        else
+        {
+            return $"{scheme}://{request.Host}";
+        }
     }
 }

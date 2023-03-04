@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics;
 using System.Net;
@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using Microsoft.Extensions.Options;
 using VerifierInsuranceCompany.Services;
 using System.Text.Json;
+using System.Globalization;
 
 namespace VerifierInsuranceCompany;
 
@@ -70,7 +71,7 @@ public class VerifierController : Controller
                     {
                         Status = VerifierConst.NotScanned,
                         Message = "Request ready, please scan with Authenticator",
-                        Expiry = response.Expiry.ToString(),
+                        Expiry = response.Expiry.ToString(CultureInfo.InvariantCulture),
                     };
                     _cache.Set(payload.Callback.State, JsonSerializer.Serialize(cacheData));
 
