@@ -179,9 +179,10 @@ public class IssuerController : ControllerBase
                 return BadRequest(new { error = "400", error_description = "Missing argument 'id'" });
             }
             CacheData? value = null;
-            if (_cache.TryGetValue(state, out string buf))
+            if (_cache.TryGetValue(state, out string? buf))
             {
-                value = JsonSerializer.Deserialize<CacheData>(buf);
+                if(buf != null)
+                    value = JsonSerializer.Deserialize<CacheData>(buf);
 
                 Debug.WriteLine("check if there was a response yet: " + value);
                 return new ContentResult { ContentType = "application/json", Content = JsonSerializer.Serialize(value) };

@@ -20,8 +20,7 @@ public class IssuerService
         DriverLicenseService driverLicenseService)
     {
         _credentialSettings = credentialSettings.Value;
-        if(_credentialSettings == null) 
-            _credentialSettings = new CredentialSettings();
+        _credentialSettings ??= new CredentialSettings();
 
         _cache = memoryCache;
         _log = log;
@@ -122,7 +121,7 @@ public class IssuerService
     public string GetRequestHostName(HttpRequest request)
     {
         string scheme = "https";// : this.Request.Scheme;
-        string originalHost = request.Headers["x-original-host"];
+        string? originalHost = request.Headers["x-original-host"];
         string hostname;
         if (!string.IsNullOrEmpty(originalHost))
             hostname = string.Format("{0}://{1}", scheme, originalHost);
