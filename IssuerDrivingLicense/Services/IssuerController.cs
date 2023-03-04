@@ -56,7 +56,7 @@ public class IssuerController : ControllerBase
                 defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
 
                 HttpResponseMessage res = await _httpClient.PostAsJsonAsync(
-                    _credentialSettings.ApiEndpoint, payload);
+                    _credentialSettings.Endpoint, payload);
 
                 var response = await res.Content.ReadFromJsonAsync<IssuanceResponse>();
 
