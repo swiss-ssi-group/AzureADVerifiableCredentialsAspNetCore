@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Net;
 using Microsoft.Extensions.Caching.Memory;
@@ -111,7 +111,7 @@ public class IssuerController : ControllerBase
     [HttpPost("/api/issuer/issuanceCallback")]
     public async Task<ActionResult> IssuanceCallback()
     {
-        string content = await new System.IO.StreamReader(Request.Body).ReadToEndAsync();
+        var content = await new StreamReader(Request.Body).ReadToEndAsync();
         var issuanceResponse = JsonSerializer.Deserialize<IssuanceCallbackResponse>(content);
 
         try
