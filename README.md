@@ -27,7 +27,8 @@
     "Instance": "https://login.microsoftonline.com/{0}",
     "TenantId": "YOURTENANTID",
     "ClientId": "APPLICATION CLIENT ID",
-    "VcApiCallbackApiKey": "SECRET"
+    "VcApiCallbackApiKey": "SECRET",
+    "Authority": "YOUR authority",
     "ClientSecret": "[client secret or instead use the prefered certificate in the next entry]",
     // "CertificateName": "[Or instead of client secret: Enter here the name of a certificate (from the user cert store) as registered with your application]",
     "IssuerAuthority": "YOUR VC SERVICE DID",
