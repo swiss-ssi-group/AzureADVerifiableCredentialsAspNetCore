@@ -82,7 +82,7 @@ public class VerifierService
         // a tenant administrator. 
         string[] scopes = new string[] { _credentialSettings.VCServiceScope };
 
-        AuthenticationResult result = null;
+        AuthenticationResult? result = null;
         try
         {
             result = await app.AcquireTokenForClient(scopes)
@@ -107,8 +107,8 @@ public class VerifierService
     }
     public string GetRequestHostName(HttpRequest request)
     {
-        string scheme = "https";// : this.Request.Scheme;
-        string originalHost = request.Headers["x-original-host"];
+        var scheme = "https";// : this.Request.Scheme;
+        string? originalHost = request.Headers["x-original-host"];
 
         if (!string.IsNullOrEmpty(originalHost))
             return string.Format("{0}://{1}", scheme, originalHost);

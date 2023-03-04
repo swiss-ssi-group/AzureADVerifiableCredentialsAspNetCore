@@ -17,7 +17,7 @@ public class VerifierCallbackResponse
     public string Subject { get; set; } = string.Empty;
 
     [JsonPropertyName("error")]
-    public CallbackError Error { get; set; }
+    public CallbackError? Error { get; set; }
 
     [JsonPropertyName("issuers")]
     public List<Issuer> Issuers { get; set; } = new List<Issuer>();

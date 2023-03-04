@@ -61,7 +61,7 @@ public class VerifierController : Controller
             if (res.IsSuccessStatusCode)
             {
                 var response = await res.Content.ReadFromJsonAsync<VerifierResponse>();
-                response.Id = payload.Callback.State;
+                response!.Id = payload.Callback.State;
                 _log.LogTrace("succesfully called Request API");
 
                 if (res.StatusCode == HttpStatusCode.Created)
@@ -100,7 +100,7 @@ public class VerifierController : Controller
     public async Task<ActionResult> PresentationCallback()
     {
         string content = await new System.IO.StreamReader(Request.Body).ReadToEndAsync();
-        VerifierCallbackResponse verifierCallbackResponse = JsonSerializer.Deserialize<VerifierCallbackResponse>(content);
+        var verifierCallbackResponse = JsonSerializer.Deserialize<VerifierCallbackResponse>(content);
 
         try
         {
@@ -109,7 +109,7 @@ public class VerifierController : Controller
             //the request will be deleted from the server immediately.
             //That's why it is so important to capture this callback and relay this to the UI so the UI can hide
             //the QR code to prevent the user from scanning it twice (resulting in an error since the request is already deleted)
-            if (verifierCallbackResponse.Code == VerifierConst.RequestRetrieved)
+            if (verifierCallbackResponse != null  && verifierCallbackResponse.Code == VerifierConst.RequestRetrieved)
             {
                 var cacheData = new CacheData
                 {
@@ -123,7 +123,7 @@ public class VerifierController : Controller
             // typically here is where the business logic is written to determine what to do with the result
             // the response in this callback contains the claims from the Verifiable Credential(s) being presented by the user
             // In this case the result is put in the in memory cache which is used by the UI when polling for the state so the UI can be updated.
-            if (verifierCallbackResponse.Code == VerifierConst.PresentationVerified)
+            if (verifierCallbackResponse != null && verifierCallbackResponse.Code == VerifierConst.PresentationVerified)
             {
                 var cacheData = new CacheData
                 {
@@ -131,8 +131,8 @@ public class VerifierController : Controller
                     Message = "Presentation verified",
                     Payload = JsonSerializer.Serialize(verifierCallbackResponse.Issuers),
                     Subject = verifierCallbackResponse.Subject,
-                    Name = verifierCallbackResponse.Issuers?.FirstOrDefault()?.Claims.Name,
-                    Details = verifierCallbackResponse.Issuers?.FirstOrDefault()?.Claims.Details
+                    Name = verifierCallbackResponse.Issuers!.FirstOrDefault()!.Claims.Name,
+                    Details = verifierCallbackResponse.Issuers!.FirstOrDefault()!.Claims.Details
 
                 };
                 _cache.Set(verifierCallbackResponse.State, JsonSerializer.Serialize(cacheData));
@@ -157,15 +157,16 @@ public class VerifierController : Controller
         {
             //the id is the state value initially created when the issuanc request was requested from the request API
             //the in-memory database uses this as key to get and store the state of the process so the UI can be updated
-            string state = this.Request.Query["id"];
+            var state = Request.Query["id"];
             if (string.IsNullOrEmpty(state))
             {
                 return BadRequest(new { error = "400", error_description = "Missing argument 'id'" });
             }
-            CacheData value = null;
-            if (_cache.TryGetValue(state, out string buf))
+            CacheData? value = null;
+            if (_cache.TryGetValue(state, out string? buf))
             {
-                value = JsonSerializer.Deserialize<CacheData>(buf);
+                if(buf != null)
+                    value = JsonSerializer.Deserialize<CacheData>(buf);
 
                 Debug.WriteLine("check if there was a response yet: " + value);
                 return new ContentResult { ContentType = "application/json", Content = JsonSerializer.Serialize(value) };
