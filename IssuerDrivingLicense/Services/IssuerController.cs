@@ -68,9 +68,9 @@ public class IssuerController : ControllerBase
                 {
                     _log.LogTrace("succesfully called Request API");
 
-                    if (payload.Issuance.Pin.Value != null)
+                    if (payload.Pin.Value != null)
                     {
-                        response.Pin = payload.Issuance.Pin.Value;
+                        response.Pin = payload.Pin.Value;
                     }
 
                     response.Id = payload.Callback.State;

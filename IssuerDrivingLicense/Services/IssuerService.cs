@@ -35,10 +35,10 @@ public class IssuerService
         var randomNumber = RandomNumberGenerator.GetInt32(1, pinMaxValue);
         var newpin = string.Format("{0:D" + length.ToString() + "}", randomNumber);
 
-        payload.Issuance.Pin.Length = 4;
-        payload.Issuance.Pin.Value = newpin;
-        payload.Issuance.CredentialsType = "MyDrivingLicense";
-        payload.Issuance.Manifest = _credentialSettings.CredentialManifest;
+        payload.Pin.Length = 4;
+        payload.Pin.Value = newpin;
+        payload.CredentialsType = "MyDrivingLicense";
+        payload.Manifest = _credentialSettings.CredentialManifest;
 
         var host = GetRequestHostName(request);
         payload.Callback.State = Guid.NewGuid().ToString();
@@ -50,8 +50,8 @@ public class IssuerService
 
         var driverLicense = await _driverLicenseService.GetDriverLicense(context.User?.Identity?.Name);
 
-        payload.Issuance.Claims.Name = $"{driverLicense?.FirstName} {driverLicense?.Name}  {driverLicense?.UserName}";
-        payload.Issuance.Claims.Details = $"Type: {driverLicense?.LicenseType} IssuedAt: {driverLicense?.IssuedAt:yyyy-MM-dd}";
+        payload.Claims.Name = $"{driverLicense?.FirstName} {driverLicense?.Name}  {driverLicense?.UserName}";
+        payload.Claims.Details = $"Type: {driverLicense?.LicenseType} IssuedAt: {driverLicense?.IssuedAt:yyyy-MM-dd}";
 
         return payload;
     }

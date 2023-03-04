@@ -12,8 +12,15 @@ public class IssuanceRequestPayload
     public string Authority { get; set; } = string.Empty;
     [JsonPropertyName("registration")]
     public Registration Registration { get; set; } = new Registration();
-    [JsonPropertyName("issuance")]
-    public Issuance Issuance { get; set; } = new Issuance();
+
+    [JsonPropertyName("type")]
+    public string CredentialsType { get; set; } = string.Empty;
+    [JsonPropertyName("manifest")]
+    public string Manifest { get; set; } = string.Empty;
+    [JsonPropertyName("pin")]
+    public Pin Pin { get; set; } = new Pin();
+    [JsonPropertyName("claims")]
+    public CredentialsClaims Claims { get; set; } = new CredentialsClaims();
 }
 
 public class Callback
@@ -37,19 +44,6 @@ public class Registration
 {
     [JsonPropertyName("clientName")]
     public string ClientName { get; set; } = string.Empty;
-}
-
-public class Issuance
-{
-    [JsonPropertyName("type")]
-    public string CredentialsType { get; set; } = string.Empty;
-    [JsonPropertyName("manifest")]
-    public string Manifest { get; set; } = string.Empty;
-    [JsonPropertyName("pin")]
-    public Pin Pin { get; set; } = new Pin();
-    [JsonPropertyName("claims")]
-    public CredentialsClaims Claims { get; set; } = new CredentialsClaims();
-
 }
 
 public class Pin
