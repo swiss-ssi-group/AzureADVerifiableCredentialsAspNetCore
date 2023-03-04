@@ -42,7 +42,7 @@ public class IssuerService
 
         var host = GetRequestHostName(request);
         payload.Callback.State = Guid.NewGuid().ToString();
-        payload.Callback.Url = $"{host}:/api/issuer/issuanceCallback";
+        payload.Callback.Url = $"{host}/api/issuer/issuanceCallback";
         payload.Callback.Headers.ApiKey = _credentialSettings.VcApiCallbackApiKey;
 
         payload.Registration.ClientName = "Verifiable Credential NDL Sample";
