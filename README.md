@@ -55,11 +55,9 @@ The classes must match the definitions. By changing these classes and the rules 
 
 This method defines the specifics of the issue request payload. This would need to be changed, if you required no pin verification or other flows. See the Azure AD VC docs for more info.
 
-## Microsoft sample APP demo-code-from-microsoft-sample
+## Microsoft sample APP 
 
-The **demo-code-from-microsoft-sample** is a second sample created directly from the Azure [sample](https://github.com/Azure-Samples/active-directory-verifiable-credentials-dotnet)
-
-This has only configuration changes for my tenant and VC definitions. Please refer to the sample repo for more info about this.
+[sample](https://github.com/Azure-Samples/active-directory-verifiable-credentials-dotnet)
 
 ## Links
 
