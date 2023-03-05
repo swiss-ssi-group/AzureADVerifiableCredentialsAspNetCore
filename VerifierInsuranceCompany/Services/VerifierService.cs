@@ -27,11 +27,10 @@ public class VerifierService
 
         var host = GetRequestHostName(request);
         payload.Callback.State = Guid.NewGuid().ToString();
-        payload.Callback.Url = $"{host}:/api/verifier/presentationCallback";
+        payload.Callback.Url = $"{host}/api/verifier/presentationCallback";
         payload.Callback.Headers.ApiKey = _credentialSettings.VcApiCallbackApiKey;
 
         payload.Registration.ClientName = "Veriable Credential NDL Verifier";
-        payload.Registration.Purpose = "So we can see that you a veriable credentials NDL";
         payload.Authority = _credentialSettings.VerifierAuthority;
 
         var requestedCredentials = new RequestedCredentials
@@ -40,7 +39,7 @@ public class VerifierService
             Purpose = "So we can see that you a veriable credentials NDL"
         };
         requestedCredentials.AcceptedIssuers.Add(_credentialSettings.IssuerAuthority);
-        payload.Presentation.RequestedCredentials.Add(requestedCredentials);
+        payload.RequestedCredentials.Add(requestedCredentials);
 
         return payload;
     }
