@@ -1,11 +1,13 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace IssuerDrivingLicense.Migrations
 {
+#pragma warning disable CS8981 // Auto generated code
     public partial class init : Migration
+#pragma warning restore CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
