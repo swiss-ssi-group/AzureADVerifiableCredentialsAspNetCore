@@ -1,5 +1,5 @@
 
-# ASP.NET Core Issue and Verify Azure AD Verifiable Credentials 
+# ASP.NET Core Issue and Verify Verifiable Credentials using Microsoft Entra Verified ID 
 
 [![.NET](https://github.com/swiss-ssi-group/AzureADVerifiableCredentialsAspNetCore/actions/workflows/dotnet.yml/badge.svg)](https://github.com/swiss-ssi-group/AzureADVerifiableCredentialsAspNetCore/actions/workflows/dotnet.yml)
 
