@@ -115,7 +115,7 @@ public class VerifierController : Controller
             //the request will be deleted from the server immediately.
             //That's why it is so important to capture this callback and relay this to the UI so the UI can hide
             //the QR code to prevent the user from scanning it twice (resulting in an error since the request is already deleted)
-            if (verifierCallbackResponse != null  && verifierCallbackResponse.Code == VerifierConst.RequestRetrieved)
+            if (verifierCallbackResponse != null  && verifierCallbackResponse.RequestStatus == VerifierConst.RequestRetrieved)
             {
                 var cacheData = new CacheData
                 {
@@ -129,16 +129,16 @@ public class VerifierController : Controller
             // typically here is where the business logic is written to determine what to do with the result
             // the response in this callback contains the claims from the Verifiable Credential(s) being presented by the user
             // In this case the result is put in the in memory cache which is used by the UI when polling for the state so the UI can be updated.
-            if (verifierCallbackResponse != null && verifierCallbackResponse.Code == VerifierConst.PresentationVerified)
+            if (verifierCallbackResponse != null && verifierCallbackResponse.RequestStatus == VerifierConst.PresentationVerified)
             {
                 var cacheData = new CacheData
                 {
                     Status = VerifierConst.PresentationVerified,
                     Message = "Presentation verified",
-                    Payload = JsonSerializer.Serialize(verifierCallbackResponse.Issuers),
+                    Payload = JsonSerializer.Serialize(verifierCallbackResponse.VerifiedCredentialsData),
                     Subject = verifierCallbackResponse.Subject,
-                    Name = verifierCallbackResponse.Issuers!.FirstOrDefault()!.Claims.Name,
-                    Details = verifierCallbackResponse.Issuers!.FirstOrDefault()!.Claims.Details
+                    Name = verifierCallbackResponse.VerifiedCredentialsData!.FirstOrDefault()!.Claims.Name,
+                    Details = verifierCallbackResponse.VerifiedCredentialsData!.FirstOrDefault()!.Claims.Details
 
                 };
                 _cache.Set(verifierCallbackResponse.State, JsonSerializer.Serialize(cacheData));
