@@ -11,22 +11,22 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="DriverLicense.Id" />
-            <input type="hidden" asp-for="DriverLicense.UserName" />
-            <input type="hidden" asp-for="DriverLicense.Name" />
-            <input type="hidden" asp-for="DriverLicense.FirstName" />
+            <input type="hidden" asp-for="DriverLicense!.Id" />
+            <input type="hidden" asp-for="DriverLicense!.UserName" />
+            <input type="hidden" asp-for="DriverLicense!.Name" />
+            <input type="hidden" asp-for="DriverLicense!.FirstName" />
 
             <div class="form-group">
-                <label class="control-label">@Model.DriverLicense.UserName</label>
+                <label class="control-label">@Model.DriverLicense!.UserName</label>
             </div>
             <div class="form-group">
                 <label class="control-label">@Model.DriverLicense.FirstName @Model.DriverLicense.Name</label>  
             </div>
             <div class="form-group">
                 <div class="checkbox">
-                    <label asp-for="DriverLicense.Valid">
-                        <input class="big_checkbox" asp-for="DriverLicense.Valid" />
-                        @Html.DisplayNameFor(model => model.DriverLicense.Valid)
+                    <label asp-for="DriverLicense!.Valid">
+                        <input class="big_checkbox" asp-for="DriverLicense!.Valid" />
+                        @Html.DisplayNameFor(model => model.DriverLicense!.Valid)
                     </label>
                 </div>
             </div>
