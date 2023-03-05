@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Web;
@@ -9,15 +8,12 @@ namespace VerifierInsuranceCompany;
 public class VerifierService
 {
     protected readonly CredentialSettings _credentialSettings;
-    protected IMemoryCache _cache;
     protected readonly ILogger<VerifierService> _log;
 
     public VerifierService(IOptions<CredentialSettings> credentialSettings,
-        IMemoryCache memoryCache,
         ILogger<VerifierService> log)
     {
         _credentialSettings = credentialSettings.Value;
-        _cache = memoryCache;
         _log = log;
     }
 
