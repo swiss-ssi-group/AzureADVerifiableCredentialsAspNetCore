@@ -34,7 +34,6 @@ public class Callback
     public string State { get; set; } = string.Empty;
     [JsonPropertyName("headers")]
     public Headers Headers { get; set; } = new Headers();
-
 }
 
 public class Headers
