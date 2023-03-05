@@ -11,7 +11,7 @@
 
 ## History
 
-2023-03-05 Fixed new VC payloads, fixed cache, recreated all VCs
+2023-03-05 Fixed new VC payloads, fixed cache, recreated all VCs, added github actions for Azure deployment
 
 2023-03-03 Updated to .NET 7, Update AAD VC service with all the breaking changes
 
