@@ -107,7 +107,7 @@ public class VerifierService
 
     public string GetRequestHostName(HttpRequest request)
     {
-        var scheme = "https";// : this.Request.Scheme;
+        var scheme = "https";// : Request.Scheme;
         var originalHost = request.Headers["x-original-host"];
         if (!string.IsNullOrEmpty(originalHost))
         {

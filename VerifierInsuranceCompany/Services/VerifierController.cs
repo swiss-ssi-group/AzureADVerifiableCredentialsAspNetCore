@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using VerifierInsuranceCompany.Services;
 using System.Text.Json;
 using System.Globalization;
+using Azure;
 
 namespace VerifierInsuranceCompany;
 
@@ -25,7 +26,7 @@ public class VerifierController : Controller
         VerifierService verifierService,
         IHttpClientFactory httpClientFactory)
     {
-        this._credentialSettings = appSettings.Value;
+        _credentialSettings = appSettings.Value;
         _cache = memoryCache;
         _log = log;
         _verifierService = verifierService;
@@ -56,7 +57,7 @@ public class VerifierController : Controller
             var defaultRequestHeaders = _httpClient.DefaultRequestHeaders;
             defaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
 
-            HttpResponseMessage res = await _httpClient.PostAsJsonAsync(
+            var res = await _httpClient.PostAsJsonAsync(
                 _credentialSettings.Endpoint, payload);
 
             if (res.IsSuccessStatusCode)
@@ -82,6 +83,13 @@ public class VerifierController : Controller
                     return Ok(response);
                 }
             }
+            else
+            {
+                var message = await res.Content.ReadAsStringAsync();
+
+                _log.LogError("Unsuccesfully called Request API {message}", message);
+                return BadRequest(new { error = "400", error_description = "Something went wrong calling the API: " + res.RequestMessage });
+            }
 
             var errorResponse = await res.Content.ReadAsStringAsync();
             _log.LogError("Unsuccesfully called Request API");
@@ -100,7 +108,7 @@ public class VerifierController : Controller
     [HttpPost]
     public async Task<ActionResult> PresentationCallback()
     {
-        string content = await new System.IO.StreamReader(Request.Body).ReadToEndAsync();
+        var content = await new StreamReader(Request.Body).ReadToEndAsync();
         var verifierCallbackResponse = JsonSerializer.Deserialize<VerifierCallbackResponse>(content);
 
         try
