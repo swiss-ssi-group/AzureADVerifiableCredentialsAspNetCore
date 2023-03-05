@@ -8,6 +8,7 @@ using VerifierInsuranceCompany.Services;
 using System.Text.Json;
 using System.Globalization;
 using Azure;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace VerifierInsuranceCompany;
 
@@ -15,19 +16,19 @@ namespace VerifierInsuranceCompany;
 public class VerifierController : Controller
 {
     protected readonly CredentialSettings _credentialSettings;
-    protected IMemoryCache _cache;
+    protected readonly IDistributedCache _distributedCache;
     protected readonly ILogger<VerifierController> _log;
     private readonly VerifierService _verifierService;
     private readonly HttpClient _httpClient;
 
     public VerifierController(IOptions<CredentialSettings> appSettings,
-        IMemoryCache memoryCache,
+        IDistributedCache distributedCache,
         ILogger<VerifierController> log,
         VerifierService verifierService,
         IHttpClientFactory httpClientFactory)
     {
         _credentialSettings = appSettings.Value;
-        _cache = memoryCache;
+        _distributedCache = distributedCache;
         _log = log;
         _verifierService = verifierService;
         _httpClient = httpClientFactory.CreateClient();
@@ -71,7 +72,7 @@ public class VerifierController : Controller
                         Message = "Request ready, please scan with Authenticator",
                         Expiry = response.Expiry.ToString(CultureInfo.InvariantCulture),
                     };
-                    _cache.Set(payload.Callback.State, JsonSerializer.Serialize(cacheData));
+                    CacheData.AddToCache(payload.Callback.State, _distributedCache, cacheData);
 
                     //the response from the VC Request API call is returned to the caller (the UI). It contains the URI to the request which Authenticator can download after
                     //it has scanned the QR code. If the payload requested the VC Request service to create the QR code that is returned as well
@@ -122,7 +123,7 @@ public class VerifierController : Controller
                     Status = VerifierConst.RequestRetrieved,
                     Message = "QR Code is scanned. Waiting for validation...",
                 };
-                _cache.Set(verifierCallbackResponse.State, JsonSerializer.Serialize(cacheData));
+                CacheData.AddToCache(verifierCallbackResponse.State, _distributedCache, cacheData);
             }
 
             // the 2nd callback is the result with the verified credential being verified.
@@ -139,9 +140,8 @@ public class VerifierController : Controller
                     Subject = verifierCallbackResponse.Subject,
                     Name = verifierCallbackResponse.VerifiedCredentialsData!.FirstOrDefault()!.Claims.Name,
                     Details = verifierCallbackResponse.VerifiedCredentialsData!.FirstOrDefault()!.Claims.Details
-
                 };
-                _cache.Set(verifierCallbackResponse.State, JsonSerializer.Serialize(cacheData));
+                CacheData.AddToCache(verifierCallbackResponse.State, _distributedCache, cacheData);
             }
 
             return Ok();
@@ -163,19 +163,18 @@ public class VerifierController : Controller
         {
             //the id is the state value initially created when the issuanc request was requested from the request API
             //the in-memory database uses this as key to get and store the state of the process so the UI can be updated
-            var state = Request.Query["id"];
-            if (string.IsNullOrEmpty(state))
+            string? state = Request.Query["id"];
+            if (state == null)
             {
                 return BadRequest(new { error = "400", error_description = "Missing argument 'id'" });
             }
-            CacheData? value = null;
-            if (_cache.TryGetValue(state, out string? buf))
-            {
-                if(buf != null)
-                    value = JsonSerializer.Deserialize<CacheData>(buf);
 
-                Debug.WriteLine("check if there was a response yet: " + value);
-                return new ContentResult { ContentType = "application/json", Content = JsonSerializer.Serialize(value) };
+            var data = CacheData.GetFromCache(state, _distributedCache);
+            if (data != null)
+            {
+                Debug.WriteLine("check if there was a response yet: " + data);
+                return new ContentResult { ContentType = "application/json",
+                    Content = JsonSerializer.Serialize(data) };
             }
 
             return Ok();
