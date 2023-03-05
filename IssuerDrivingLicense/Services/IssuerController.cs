@@ -8,6 +8,7 @@ using IssuerDrivingLicense.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
+using System.Globalization;
 
 namespace IssuerDrivingLicense;
 
@@ -80,7 +81,7 @@ public class IssuerController : ControllerBase
                     {
                         Status = IssuanceConst.NotScanned,
                         Message = "Request ready, please scan with Authenticator",
-                        Expiry = response.Expiry.ToString()
+                        Expiry = response.Expiry.ToString(CultureInfo.InvariantCulture)
                     };
                     CacheData.AddToCache(payload.Callback.State, _distributedCache, cacheData);
 

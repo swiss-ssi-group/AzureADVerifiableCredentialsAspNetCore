@@ -34,9 +34,10 @@ public class IssuerService
         var length = 4;
         var pinMaxValue = (int)Math.Pow(10, length) - 1;
         var randomNumber = RandomNumberGenerator.GetInt32(1, pinMaxValue);
-        var newpin = string.Format("{0:D" + length.ToString() + "}", randomNumber);
+        var newpin = string.Format(CultureInfo.InvariantCulture,
+            "{0:D" + length.ToString(CultureInfo.InvariantCulture) + "}", randomNumber);
 
-        payload.Pin.Length = 4;
+        payload.Pin.Length = length;
         payload.Pin.Value = newpin;
         payload.CredentialsType = "MyDrivingLicense";
         payload.Manifest = _credentialSettings.CredentialManifest;
