@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using IssuerDrivingLicense.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace IssuerDrivingLicense;
 
@@ -15,19 +16,19 @@ namespace IssuerDrivingLicense;
 public class IssuerController : ControllerBase
 {
     protected readonly CredentialSettings _credentialSettings;
-    protected IMemoryCache _cache;
+    protected IDistributedCache _distributedCache;
     protected readonly ILogger<IssuerController> _log;
     private readonly IssuerService _issuerService;
     private readonly HttpClient _httpClient;
 
     public IssuerController(IOptions<CredentialSettings> credentialSettings,
-        IMemoryCache memoryCache,
+        IDistributedCache distributedCache,
         ILogger<IssuerController> log,
         IssuerService issuerService,
         IHttpClientFactory httpClientFactory)
     {
         _credentialSettings = credentialSettings.Value;
-        _cache = memoryCache;
+        _distributedCache = distributedCache;
         _log = log;
         _issuerService = issuerService;
         _httpClient = httpClientFactory.CreateClient();
@@ -81,7 +82,7 @@ public class IssuerController : ControllerBase
                         Message = "Request ready, please scan with Authenticator",
                         Expiry = response.Expiry.ToString()
                     };
-                    _cache.Set(payload.Callback.State, JsonSerializer.Serialize(cacheData));
+                    CacheData.AddToCache(payload.Callback.State, _distributedCache, cacheData);
 
                     return Ok(response);
                 }
@@ -128,7 +129,7 @@ public class IssuerController : ControllerBase
                     Status = IssuanceConst.RequestRetrieved,
                     Message = "QR Code is scanned. Waiting for issuance...",
                 };
-                _cache.Set(issuanceResponse.State, JsonSerializer.Serialize(cacheData));
+                CacheData.AddToCache(issuanceResponse.State, _distributedCache, cacheData);
             }
 
             if (issuanceResponse?.Code == IssuanceConst.IssuanceSuccessful)
@@ -138,7 +139,7 @@ public class IssuerController : ControllerBase
                     Status = IssuanceConst.IssuanceSuccessful,
                     Message = "Credential successfully issued",
                 };
-                _cache.Set(issuanceResponse.State, JsonSerializer.Serialize(cacheData));
+                CacheData.AddToCache(issuanceResponse.State, _distributedCache, cacheData);
             }
 
             if (issuanceResponse?.Code == IssuanceConst.IssuanceError)
@@ -151,7 +152,7 @@ public class IssuerController : ControllerBase
                     //So assume this error happens when the users entered the incorrect pincode and ask to try again.
                     Message = issuanceResponse.Error?.Message
                 };
-                _cache.Set(issuanceResponse.State, JsonSerializer.Serialize(cacheData));
+                CacheData.AddToCache(issuanceResponse.State, _distributedCache, cacheData);
             }
 
             return Ok();
@@ -175,18 +176,20 @@ public class IssuerController : ControllerBase
             //the id is the state value initially created when the issuanc request was requested from the request API
             //the in-memory database uses this as key to get and store the state of the process so the UI can be updated
             string? state = Request.Query["id"];
-            if (string.IsNullOrEmpty(state))
+            if (state == null)
             {
                 return BadRequest(new { error = "400", error_description = "Missing argument 'id'" });
             }
-            CacheData? value = null;
-            if (_cache.TryGetValue(state, out string? buf))
-            {
-                if(buf != null)
-                    value = JsonSerializer.Deserialize<CacheData>(buf);
 
-                Debug.WriteLine("check if there was a response yet: " + value);
-                return new ContentResult { ContentType = "application/json", Content = JsonSerializer.Serialize(value) };
+            var data = CacheData.GetFromCache(state, _distributedCache);
+            if (data != null)
+            {
+                Debug.WriteLine("check if there was a response yet: " + data);
+                return new ContentResult
+                {
+                    ContentType = "application/json",
+                    Content = JsonSerializer.Serialize(data)
+                };
             }
 
             return Ok();
