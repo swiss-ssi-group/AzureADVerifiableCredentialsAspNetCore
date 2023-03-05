@@ -43,9 +43,6 @@ public class VerifierController : Controller
         try
         {
             var payload = _verifierService.GetVerifierRequestPayload(Request);
-
-            //The VC Request API is an authenticated API. We need to clientid and secret (or certificate) to create an access token which 
-            //needs to be send as bearer to the VC Request API
             var (Token, Error, ErrorDescription) = await _verifierService.GetAccessToken();
 
             if (string.IsNullOrEmpty(Token))
@@ -88,7 +85,7 @@ public class VerifierController : Controller
                 var message = await res.Content.ReadAsStringAsync();
 
                 _log.LogError("Unsuccesfully called Request API {message}", message);
-                return BadRequest(new { error = "400", error_description = "Something went wrong calling the API: " + res.RequestMessage });
+                return BadRequest(new { error = "400", error_description = "Something went wrong calling the API: " });
             }
 
             var errorResponse = await res.Content.ReadAsStringAsync();
