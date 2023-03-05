@@ -2,6 +2,9 @@ using System.Text.Json.Serialization;
 
 namespace VerifierInsuranceCompany.Services;
 
+/// <summary>
+/// https://learn.microsoft.com/en-us/azure/active-directory/verifiable-credentials/presentation-request-api#presentation-request-payload
+/// </summary>
 public class VerifierRequestPayload
 {
     [JsonPropertyName("includeQRCode")]

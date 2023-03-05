@@ -1,7 +1,10 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace IssuerDrivingLicense.Services;
 
+/// <summary>
+/// https://learn.microsoft.com/en-us/azure/active-directory/verifiable-credentials/presentation-request-api
+/// </summary>
 public class IssuanceRequestPayload
 {
     [JsonPropertyName("includeQRCode")]
