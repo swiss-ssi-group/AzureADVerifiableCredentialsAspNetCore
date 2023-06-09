@@ -24,11 +24,7 @@ public class Startup
 
         services.AddHttpClient();
         services.AddDistributedMemoryCache();
-        services.AddSession(options =>
-        {
-            options.IdleTimeout = TimeSpan.FromMinutes(1);//You can set Time   
-            options.Cookie.IsEssential = true;
-        });
+
         services.Configure<CookiePolicyOptions>(options =>
         {
             // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -52,7 +48,7 @@ public class Startup
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
-        app.UseSession();
+
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseRouting();
