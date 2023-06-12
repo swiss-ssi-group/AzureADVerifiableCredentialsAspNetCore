@@ -123,7 +123,7 @@ public class IssuerController : ControllerBase
             //the request will be deleted from the server immediately.
             //That's why it is so important to capture this callback and relay this to the UI so the UI can hide
             //the QR code to prevent the user from scanning it twice (resulting in an error since the request is already deleted)
-            if (issuanceResponse?.Code == IssuanceConst.RequestRetrieved)
+            if (issuanceResponse?.RequestStatus == IssuanceConst.RequestRetrieved)
             {
                 var cacheData = new CacheData
                 {
@@ -133,7 +133,7 @@ public class IssuerController : ControllerBase
                 CacheData.AddToCache(issuanceResponse.State, _distributedCache, cacheData);
             }
 
-            if (issuanceResponse?.Code == IssuanceConst.IssuanceSuccessful)
+            if (issuanceResponse?.RequestStatus == IssuanceConst.IssuanceSuccessful)
             {
                 var cacheData = new CacheData
                 {
@@ -143,7 +143,7 @@ public class IssuerController : ControllerBase
                 CacheData.AddToCache(issuanceResponse.State, _distributedCache, cacheData);
             }
 
-            if (issuanceResponse?.Code == IssuanceConst.IssuanceError)
+            if (issuanceResponse?.RequestStatus == IssuanceConst.IssuanceError)
             {
                 var cacheData = new CacheData
                 {
