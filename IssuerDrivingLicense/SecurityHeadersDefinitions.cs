@@ -21,7 +21,7 @@ public static class SecurityHeadersDefinitions
                 builder.AddImgSrc().Self().From("data:");
                 builder.AddFormAction().Self();
                 builder.AddFontSrc().Self();
-                builder.AddStyleSrc().Self(); // .UnsafeInline();
+                builder.AddStyleSrc().Self().UnsafeInline();
                 builder.AddBaseUri().Self();
                 builder.AddScriptSrc().UnsafeInline().WithNonce();
                 builder.AddFrameAncestors().None();
