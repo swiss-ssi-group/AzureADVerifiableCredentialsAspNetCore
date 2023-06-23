@@ -57,12 +57,12 @@ public class IssuerService
         payload.Claims.GivenName = driverLicense!.GivenName;
         payload.Claims.BirthDate = $"{driverLicense!.DateOfBirth:yyyy-MM-dd}";
         payload.Claims.IssueDate = $"{driverLicense!.IssueDate:yyyy-MM-dd}";
-        payload.Claims.ExpiryDate = string.Empty;
+        payload.Claims.ExpiryDate = $"{driverLicense!.ExpiryDate:yyyy-MM-dd}";
         // 2 code, defined in ISO 3166-1
-        payload.Claims.IssuingCountry = "CH";
-        payload.Claims.IssuingAuthority = "BE";
-        payload.Claims.DocumentNumber = string.Empty;
-        payload.Claims.AdministrativeNumber = string.Empty;
+        payload.Claims.IssuingCountry = driverLicense!.IssuingCountry;
+        payload.Claims.IssuingAuthority = driverLicense!.IssuingAuthority;
+        payload.Claims.DocumentNumber = driverLicense!.DocumentNumber;
+        payload.Claims.AdministrativeNumber = driverLicense!.AdministrativeNumber;
         //{
         //  "codes": [{ "code": "D"}],
         //  "vehicle_category_code": "D",
@@ -71,7 +71,7 @@ public class IssuerService
         //}
         payload.Claims.DrivingPrivileges = driverLicense!.DrivingPrivileges;
         // Distinguishing sign of the issuing country according to 18013-1 annex F NOTE this field is added for purposes of the UN conventions on driving licences
-        payload.Claims.UnDistinguishingSign = "CH";
+        payload.Claims.UnDistinguishingSign = driverLicense!.UnDistinguishingSign;
 
         return payload;
     }
