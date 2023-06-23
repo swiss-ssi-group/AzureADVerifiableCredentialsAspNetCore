@@ -26,12 +26,12 @@ public class VerifierService
         payload.Callback.Url = $"{host}/api/verifier/presentationCallback";
         payload.Callback.Headers.ApiKey = _credentialSettings.VcApiCallbackApiKey;
 
-        payload.Registration.ClientName = "Veriable Credential NDL Verifier";
+        payload.Registration.ClientName = "NDL Iso18013 Drivers License";
         payload.Authority = _credentialSettings.VerifierAuthority;
 
         var requestedCredentials = new RequestedCredentials
         {
-            CrendentialsType = "MyDrivingLicense",
+            CrendentialsType = "Iso18013DriversLicense",
             Purpose = "So we can see that you a veriable credentials NDL"
         };
         requestedCredentials.AcceptedIssuers.Add(_credentialSettings.IssuerAuthority);

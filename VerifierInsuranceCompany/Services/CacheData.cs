@@ -16,9 +16,9 @@ public class CacheData
     [JsonPropertyName("subject")]
     public string Subject { get; set; } = string.Empty;
     [JsonPropertyName("name")]
-    public string Name { get; set; } = string.Empty;
+    public string FamilyName { get; set; } = string.Empty;
     [JsonPropertyName("details")]
-    public string Details { get; set; } = string.Empty;
+    public string DocumentNumber { get; set; } = string.Empty;
 
     public static void AddToCache(string key, IDistributedCache cache, CacheData cacheData)
     {
