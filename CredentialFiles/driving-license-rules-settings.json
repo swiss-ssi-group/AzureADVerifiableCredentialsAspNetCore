@@ -80,7 +80,7 @@
       }
     ]
   },
-  "validityInterval": 315619200000000,
+  "validityInterval": 315619200000000, // 10 years, max value less than this, issued opened
   "vc": {
     "type": [
       "Iso18013DriversLicense"
