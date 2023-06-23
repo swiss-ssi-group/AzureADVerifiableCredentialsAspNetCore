@@ -1,0 +1,59 @@
+{
+  "attestations": {
+    "idTokenHints": [
+      {
+        "mapping": [
+          {
+            "outputClaim": "givenName",
+            "required": true,
+            "inputClaim": "givenName",
+            "indexed": false
+          },
+          {
+            "outputClaim": "surname",
+            "required": true,
+            "inputClaim": "surname",
+            "indexed": false
+          },
+          {
+            "outputClaim": "mail",
+            "required": true,
+            "inputClaim": "mail",
+            "indexed": false
+          },
+          {
+            "outputClaim": "jobTitle",
+            "required": true,
+            "inputClaim": "jobTitle",
+            "indexed": false
+          },
+          {
+            "outputClaim": "displayName",
+            "required": true,
+            "inputClaim": "displayName",
+            "indexed": false
+          },
+          {
+            "outputClaim": "preferredLanguage",
+            "required": true,
+            "inputClaim": "preferredLanguage",
+            "indexed": false
+          },
+          {
+            "outputClaim": "revocationId",
+            "required": true,
+            "inputClaim": "revocationId",
+            "indexed": false
+          }
+        ],
+        "required": false
+      }
+    ]
+  },
+  "validityInterval": 315619200000000,
+  "vc": {
+    "type": [
+      "Iso18013DriversLicense"
+    ]
+  }
+}

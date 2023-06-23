@@ -3,9 +3,6 @@ using System.Text.Json.Serialization;
 namespace IssuerDrivingLicense.Services;
 
 /// <summary>
-/// Application specific claims used in the payload of the issue request. 
-/// When using the id_token for the subject claims, the IDP needs to add the values to the id_token!
-/// The claims can be mapped to anything then.
 /// https://w3c-ccg.github.io/vdl-vocab/
 /// https://github.com/w3c-ccg/vdl-vocab/blob/main/context/v1.jsonld
 /// Iso18013DriversLicense
@@ -38,60 +35,44 @@ public class CredentialsClaims
     [JsonPropertyName("un_distinguishing_sign")]
     public string UnDistinguishingSign { get; set; } = string.Empty;
     [JsonPropertyName("gender")]
+
     public string Gender { get; set; } = string.Empty;
     [JsonPropertyName("height")]
     public string Height { get; set; } = string.Empty;
+    [JsonPropertyName("weight")]
+    public string Weight { get; set; } = string.Empty;
+    [JsonPropertyName("eye_color")]
+    public string EyeColor { get; set; } = string.Empty;
+    [JsonPropertyName("hair_color")]
+    public string HairColor { get; set; } = string.Empty;
+    [JsonPropertyName("birth_place")]
+    public string BirthPlace { get; set; } = string.Empty;
+    [JsonPropertyName("resident_address")]
+    public string ResidentAddress { get; set; } = string.Empty;
+    // "type": "image/jpg;base64url",
+    [JsonPropertyName("portrait")]
+    public string Portrait { get; set; } = string.Empty;
+    [JsonPropertyName("portrait_capture_date")]
+    public string PortraitCaptureDate { get; set; } = string.Empty;
+    [JsonPropertyName("age_in_years")]
+    public string AgeInYears { get; set; } = string.Empty;
+    [JsonPropertyName("age_birth_year")]
+    public string AgeBirthYear { get; set; } = string.Empty;
+    [JsonPropertyName("issuing_jurisdiction")]
+    public string IssuingJurisdiction { get; set; } = string.Empty;
+    [JsonPropertyName("nationality")]
+    public string Nationality { get; set; } = string.Empty;
+    [JsonPropertyName("resident_city")]
+    public string ResidentCity { get; set; } = string.Empty;
+    [JsonPropertyName("resident_state")]
+    public string ResidentState { get; set; } = string.Empty;
+    [JsonPropertyName("resident_postal_code")]
+    public string ResidentPostalCode { get; set; } = string.Empty;
+    [JsonPropertyName("name_national_character")]
+    public string NameNationalCharacter { get; set; } = string.Empty;
+    [JsonPropertyName("signature_usual_mark")]
+    public string SignatureUsualMark { get; set; } = string.Empty;
 
 
 
-
-
-        //"weight": {
-        //  "@id": "https://w3id.org/vdl#weight"
-        //},
-        //"eye_color": {
-        //  "@id": "https://w3id.org/vdl#eye_color"
-        //},
-        //"hair_color": {
-        //  "@id": "https://w3id.org/vdl#hair_color"
-        //},
-        //"birth_place": {
-        //  "@id": "https://w3id.org/vdl#birth_place"
-        //},
-        //"resident_address": {
-        //  "@id": "https://w3id.org/vdl#resident_address"
-        //},
-        //"portrait": {
-        //  "@id": "https://w3id.org/vdl#portrait"
-        //},
-        //"portrait_capture_date": {
-        //  "@id": "https://w3id.org/vdl#portrait_capture_date"
-        //},
-        //"age_in_years": {
-        //  "@id": "https://w3id.org/vdl#age_in_years"
-        //},
-        //"age_birth_year": {
-        //  "@id": "https://w3id.org/vdl#age_birth_year"
-        //},
-        //"issuing_jurisdiction": {
-        //  "@id": "https://w3id.org/vdl#issuing_jurisdiction"
-        //},
-        //"nationality": {
-        //  "@id": "https://w3id.org/vdl#nationality"
-        //},
-        //"resident_city": {
-        //  "@id": "https://w3id.org/vdl#resident_city"
-        //},
-        //"resident_state": {
-        //  "@id": "https://w3id.org/vdl#resident_state"
-        //},
-        //"resident_postal_code": {
-        //  "@id": "https://w3id.org/vdl#resident_postal_code"
-        //},
-        //"name_national_character": {
-        //  "@id": "https://w3id.org/vdl#name_national_character"
-        //},
-        //"signature_usual_mark": {
-        //  "@id": "https://w3id.org/vdl#signature_usual_mark"
-        //}
 }
