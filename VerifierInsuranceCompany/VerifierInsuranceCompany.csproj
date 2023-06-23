@@ -9,8 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.7" NoWarn="NU1605" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.7" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.8" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.8" NoWarn="NU1605" />
     <PackageReference Include="Microsoft.Identity.Web" Version="2.12.4" />
     <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.12.4" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
