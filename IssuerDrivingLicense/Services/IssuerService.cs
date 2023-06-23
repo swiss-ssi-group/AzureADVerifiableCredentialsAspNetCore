@@ -47,7 +47,7 @@ public class IssuerService
         payload.Callback.Url = $"{host}/api/issuer/issuanceCallback";
         payload.Callback.Headers.ApiKey = _credentialSettings.VcApiCallbackApiKey;
 
-        payload.Registration.ClientName = "Iso18013 Drivers License";
+        payload.Registration.ClientName = "NDL Iso18013 DriversLicense";
         payload.Authority = _credentialSettings.IssuerAuthority;
 
         var driverLicense = await _driverLicenseService.GetDriverLicense(context.User?.Identity?.Name);

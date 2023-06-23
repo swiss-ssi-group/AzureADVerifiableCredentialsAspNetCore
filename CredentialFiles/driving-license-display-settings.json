@@ -5,9 +5,8 @@
     "issuedBy": "damienbodsharepoint",
     "backgroundColor": "#555f55",
     "textColor": "#ffffff",
-    "logo": { // png works, svg does not
+    "logo": {
       "uri": "https://raw.githubusercontent.com/swiss-ssi-group/TrinsicAspNetCore/main/src/NationalDrivingLicense/wwwroot/ndl_car_01.png",
-      //"uri": "https://raw.githubusercontent.com/swiss-ssi-group/AzureADVerifiableCredentialsAspNetCore/main/IssuerDrivingLicense/wwwroot/user-regular.svg",
       "description": "NDL Iso18013 DriversLicense"
     },
     "description": "drvinglicense"
