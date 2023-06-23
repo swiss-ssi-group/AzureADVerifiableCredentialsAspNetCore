@@ -39,7 +39,7 @@ public class IssuerService
 
         payload.Pin.Length = length;
         payload.Pin.Value = newpin;
-        payload.CredentialsType = "MyDrivingLicense";
+        payload.CredentialsType = "Iso18013DriversLicense";
         payload.Manifest = _credentialSettings.CredentialManifest;
 
         var host = GetRequestHostName(request);
@@ -47,7 +47,7 @@ public class IssuerService
         payload.Callback.Url = $"{host}/api/issuer/issuanceCallback";
         payload.Callback.Headers.ApiKey = _credentialSettings.VcApiCallbackApiKey;
 
-        payload.Registration.ClientName = "Verifiable Credential NDL Sample";
+        payload.Registration.ClientName = "Iso18013 Drivers License";
         payload.Authority = _credentialSettings.IssuerAuthority;
 
         var driverLicense = await _driverLicenseService.GetDriverLicense(context.User?.Identity?.Name);
