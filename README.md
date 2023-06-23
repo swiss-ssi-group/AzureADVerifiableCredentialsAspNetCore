@@ -45,6 +45,12 @@
 
 ```
 
+## Local debugging, required for callback
+
+```
+ngrok http https://localhost:5001
+```
+
 ## Feedback in issuer app
 
 When running the issuer application, ngrok is used if you would like to receive feedback from the VC issuing through the callback. This requires a public IP. The IP needs to be added to the **Azure App Registration** as a redirect URL to authenticate. ngrok is only used for development.
@@ -63,6 +69,13 @@ This method defines the specifics of the issue request payload. This would need 
 
 [sample](https://github.com/Azure-Samples/active-directory-verifiable-credentials-dotnet)
 
+## Database
+
+```
+Add-Migration "init"
+
+Update-Database
+```
 ## Links
 
 https://docs.microsoft.com/en-us/azure/active-directory/verifiable-credentials/

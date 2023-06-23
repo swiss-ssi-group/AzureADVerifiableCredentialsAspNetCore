@@ -137,8 +137,8 @@ public class VerifierController : Controller
                     Message = "Presentation verified",
                     Payload = JsonSerializer.Serialize(verifierCallbackResponse.VerifiedCredentialsData),
                     Subject = verifierCallbackResponse.Subject,
-                    Name = verifierCallbackResponse.VerifiedCredentialsData!.FirstOrDefault()!.Claims.Name,
-                    Details = verifierCallbackResponse.VerifiedCredentialsData!.FirstOrDefault()!.Claims.Details
+                    FamilyName = verifierCallbackResponse.VerifiedCredentialsData!.FirstOrDefault()!.Claims.FamilyName,
+                    DocumentNumber = verifierCallbackResponse.VerifiedCredentialsData!.FirstOrDefault()!.Claims.DocumentNumber
                 };
                 CacheData.AddToCache(verifierCallbackResponse.State, _distributedCache, cacheData);
             }

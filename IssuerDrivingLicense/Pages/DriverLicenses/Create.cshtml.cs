@@ -1,4 +1,4 @@
-﻿using IssuerDrivingLicense.Persistence;
+using IssuerDrivingLicense.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -35,10 +35,22 @@ public class CreateModel : PageModel
         }
 
         DriverLicense.Issuedby = HttpContext.User?.Identity?.Name;
-        DriverLicense.IssuedAt = DateTimeOffset.UtcNow;
+        DriverLicense.IssueDate = DateTimeOffset.UtcNow;
+        // TODO add logic in UI
+        DriverLicense.ExpiryDate = DateTimeOffset.UtcNow.AddYears(10);
+        DriverLicense.IssuingCountry = "CH";
+        // TODO add logic for county
+        DriverLicense.IssuingAuthority = "BE";
+        DriverLicense.DocumentNumber = DriverLicenseService.GetRandomString();
+        DriverLicense.AdministrativeNumber = DriverLicenseService.GetRandomString();
+        DriverLicense.UnDistinguishingSign = "CH";
+
+        // TODO needs to be a json from spec format
+        //DrivingPrivileges
+        // TODO add other properties as needed
 
         _context.DriverLicenses.Add(DriverLicense);
-        await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
         return RedirectToPage("./User", new { id = DriverLicense.UserName });
     }

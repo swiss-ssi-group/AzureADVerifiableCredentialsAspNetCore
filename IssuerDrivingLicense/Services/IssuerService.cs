@@ -39,7 +39,7 @@ public class IssuerService
 
         payload.Pin.Length = length;
         payload.Pin.Value = newpin;
-        payload.CredentialsType = "MyDrivingLicense";
+        payload.CredentialsType = "Iso18013DriversLicense";
         payload.Manifest = _credentialSettings.CredentialManifest;
 
         var host = GetRequestHostName(request);
@@ -47,20 +47,37 @@ public class IssuerService
         payload.Callback.Url = $"{host}/api/issuer/issuanceCallback";
         payload.Callback.Headers.ApiKey = _credentialSettings.VcApiCallbackApiKey;
 
-        payload.Registration.ClientName = "Verifiable Credential NDL Sample";
+        payload.Registration.ClientName = "NDL Iso18013 DriversLicense";
         payload.Authority = _credentialSettings.IssuerAuthority;
 
         var driverLicense = await _driverLicenseService.GetDriverLicense(context.User?.Identity?.Name);
 
-        payload.Claims.Name = $"{driverLicense?.FirstName} {driverLicense?.Name}  {driverLicense?.UserName}";
-        payload.Claims.Details = $"Type: {driverLicense?.LicenseType} IssuedAt: {driverLicense?.IssuedAt:yyyy-MM-dd}";
+        // TODO complete fields
+        payload.Claims.FamilyName = driverLicense!.FamilyName;
+        payload.Claims.GivenName = driverLicense!.GivenName;
+        payload.Claims.BirthDate = $"{driverLicense!.DateOfBirth:yyyy-MM-dd}";
+        payload.Claims.IssueDate = $"{driverLicense!.IssueDate:yyyy-MM-dd}";
+        payload.Claims.ExpiryDate = $"{driverLicense!.ExpiryDate:yyyy-MM-dd}";
+        // 2 code, defined in ISO 3166-1
+        payload.Claims.IssuingCountry = driverLicense!.IssuingCountry;
+        payload.Claims.IssuingAuthority = driverLicense!.IssuingAuthority;
+        payload.Claims.DocumentNumber = driverLicense!.DocumentNumber;
+        payload.Claims.AdministrativeNumber = driverLicense!.AdministrativeNumber;
+        //{
+        //  "codes": [{ "code": "D"}],
+        //  "vehicle_category_code": "D",
+        //  "issue_date": "2019-01-01",
+        //  "expiry_date": "2027-01-01"
+        //}
+        payload.Claims.DrivingPrivileges = driverLicense!.DrivingPrivileges;
+        // Distinguishing sign of the issuing country according to 18013-1 annex F NOTE this field is added for purposes of the UN conventions on driving licences
+        payload.Claims.UnDistinguishingSign = driverLicense!.UnDistinguishingSign;
 
         return payload;
     }
 
     public async Task<(string Token, string Error, string ErrorDescription)> GetAccessToken()
     {
-
         // You can run this sample using ClientSecret or Certificate. The code will differ only when instantiating the IConfidentialClientApplication
         var isUsingClientSecret = _credentialSettings.AppUsesClientSecret(_credentialSettings);
 

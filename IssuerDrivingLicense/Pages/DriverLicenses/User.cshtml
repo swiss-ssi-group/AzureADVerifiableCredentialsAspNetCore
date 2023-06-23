@@ -31,16 +31,16 @@
                 @Html.DisplayFor(modelItem => item.UserName)
             </td>
             <td>
-                @item.IssuedAt.ToString("MM/dd/yyyy")
+                @item.IssueDate.ToString("MM/dd/yyyy")
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.FamilyName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
+                @Html.DisplayFor(modelItem => item.GivenName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.LicenseType)
+                @Html.DisplayFor(modelItem => item.DrivingPrivileges)
             </td>
             <td>
                 @item.DateOfBirth.ToString("MM/dd/yyyy")
