@@ -2,6 +2,7 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Home";
+    var nonce = this.HttpContext.GetNonce();
 }
 
 <div class="container">
@@ -13,13 +14,9 @@
             <h3>Verifiable Credential Insurance which requires driving license proof</h3>
         
             <button type="button" id="idVerify" class="btn btn-primary">Do new verification</button>
-            <script>
-                var idVerify = document.getElementById('idVerify');
 
-                idVerify.addEventListener('click', () => {
-                    window.location = "verifier";
-                })
-            </script>
+            <script src="index.js" nonce="@nonce"></script>
+
         </div>
     </div>
   </div>
