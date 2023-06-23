@@ -18,38 +18,63 @@
   },
   "claims": [
     {
-      "claim": "vc.credentialSubject.givenName",
+      "claim": "vc.credentialSubject.family_name",
       "label": "Name",
       "type": "String"
     },
     {
-      "claim": "vc.credentialSubject.surname",
-      "label": "Surname",
+      "claim": "vc.credentialSubject.given_name",
+      "label": "Given name",
       "type": "String"
     },
     {
-      "claim": "vc.credentialSubject.mail",
-      "label": "Mail",
+      "claim": "vc.credentialSubject.birth_date",
+      "label": "Date of birth",
       "type": "String"
     },
     {
-      "claim": "vc.credentialSubject.jobTitle",
-      "label": "Job Title",
+      "claim": "vc.credentialSubject.issue_date",
+      "label": "Issue date",
       "type": "String"
     },
     {
-      "claim": "vc.credentialSubject.displayName",
-      "label": "Display Name",
+      "claim": "vc.credentialSubject.expiry_date",
+      "label": "Expiry date",
       "type": "String"
     },
     {
-      "claim": "vc.credentialSubject.preferredLanguage",
-      "label": "Preferred language",
+      "claim": "vc.credentialSubject.issuing_country",
+      "label": "Issuing country",
       "type": "String"
     },
     {
-      "claim": "vc.credentialSubject.revocationId",
-      "label": "Revocation Id",
+      "claim": "vc.credentialSubject.issuing_authority",
+      "label": "Issuing authority",
+      "type": "String"
+    },
+    {
+      "claim": "vc.credentialSubject.document_number",
+      "label": "Document_number",
+      "type": "String"
+    },
+    {
+      "claim": "vc.credentialSubject.administrative_number",
+      "label": "Administrative number",
+      "type": "String"
+    },
+    {
+      "claim": "vc.credentialSubject.driving_privileges",
+      "label": "Driving privileges",
+      "type": "String"
+    },
+    {
+      "claim": "vc.credentialSubject.un_distinguishing_sign",
+      "label": "UN distinguishing sign",
+      "type": "String"
+    },
+    {
+      "claim": "vc.credentialSubject.issuing_authority",
+      "label": "Issuing authority",
       "type": "String"
     }
   ]

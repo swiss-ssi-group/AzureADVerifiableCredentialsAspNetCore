@@ -4,45 +4,75 @@
       {
         "mapping": [
           {
-            "outputClaim": "givenName",
+            "outputClaim": "family_name",
             "required": true,
-            "inputClaim": "givenName",
+            "inputClaim": "family_name",
             "indexed": false
           },
           {
-            "outputClaim": "surname",
+            "outputClaim": "given_name",
             "required": true,
-            "inputClaim": "surname",
+            "inputClaim": "given_name",
             "indexed": false
           },
           {
-            "outputClaim": "mail",
+            "outputClaim": "birth_date",
             "required": true,
-            "inputClaim": "mail",
+            "inputClaim": "birth_date",
             "indexed": false
           },
           {
-            "outputClaim": "jobTitle",
+            "outputClaim": "issue_date",
             "required": true,
-            "inputClaim": "jobTitle",
+            "inputClaim": "issue_date",
             "indexed": false
           },
           {
-            "outputClaim": "displayName",
+            "outputClaim": "expiry_date",
             "required": true,
-            "inputClaim": "displayName",
+            "inputClaim": "expiry_date",
             "indexed": false
           },
           {
-            "outputClaim": "preferredLanguage",
+            "outputClaim": "issuing_country",
             "required": true,
-            "inputClaim": "preferredLanguage",
+            "inputClaim": "issuing_country",
             "indexed": false
           },
           {
-            "outputClaim": "revocationId",
+            "outputClaim": "issuing_authority",
             "required": true,
-            "inputClaim": "revocationId",
+            "inputClaim": "issuing_authority",
+            "indexed": false
+          },
+          {
+            "outputClaim": "document_number",
+            "required": true,
+            "inputClaim": "document_number",
+            "indexed": false
+          },
+          {
+            "outputClaim": "administrative_number",
+            "required": true,
+            "inputClaim": "administrative_number",
+            "indexed": false
+          },
+          {
+            "outputClaim": "driving_privileges",
+            "required": true,
+            "inputClaim": "driving_privileges",
+            "indexed": false
+          },
+          {
+            "outputClaim": "un_distinguishing_sign",
+            "required": true,
+            "inputClaim": "un_distinguishing_sign",
+            "indexed": false
+          },
+          {
+            "outputClaim": "issuing_authority",
+            "required": true,
+            "inputClaim": "issuing_authority",
             "indexed": false
           }
         ],

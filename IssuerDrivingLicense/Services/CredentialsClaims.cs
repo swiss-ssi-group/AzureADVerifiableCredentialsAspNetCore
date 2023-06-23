@@ -34,45 +34,44 @@ public class CredentialsClaims
     public string DrivingPrivileges { get; set; } = string.Empty;
     [JsonPropertyName("un_distinguishing_sign")]
     public string UnDistinguishingSign { get; set; } = string.Empty;
-    [JsonPropertyName("gender")]
 
-    public string Gender { get; set; } = string.Empty;
-    [JsonPropertyName("height")]
-    public string Height { get; set; } = string.Empty;
-    [JsonPropertyName("weight")]
-    public string Weight { get; set; } = string.Empty;
-    [JsonPropertyName("eye_color")]
-    public string EyeColor { get; set; } = string.Empty;
-    [JsonPropertyName("hair_color")]
-    public string HairColor { get; set; } = string.Empty;
-    [JsonPropertyName("birth_place")]
-    public string BirthPlace { get; set; } = string.Empty;
-    [JsonPropertyName("resident_address")]
-    public string ResidentAddress { get; set; } = string.Empty;
-    // "type": "image/jpg;base64url",
-    [JsonPropertyName("portrait")]
-    public string Portrait { get; set; } = string.Empty;
-    [JsonPropertyName("portrait_capture_date")]
-    public string PortraitCaptureDate { get; set; } = string.Empty;
-    [JsonPropertyName("age_in_years")]
-    public string AgeInYears { get; set; } = string.Empty;
-    [JsonPropertyName("age_birth_year")]
-    public string AgeBirthYear { get; set; } = string.Empty;
-    [JsonPropertyName("issuing_jurisdiction")]
-    public string IssuingJurisdiction { get; set; } = string.Empty;
-    [JsonPropertyName("nationality")]
-    public string Nationality { get; set; } = string.Empty;
-    [JsonPropertyName("resident_city")]
-    public string ResidentCity { get; set; } = string.Empty;
-    [JsonPropertyName("resident_state")]
-    public string ResidentState { get; set; } = string.Empty;
-    [JsonPropertyName("resident_postal_code")]
-    public string ResidentPostalCode { get; set; } = string.Empty;
-    [JsonPropertyName("name_national_character")]
-    public string NameNationalCharacter { get; set; } = string.Empty;
-    [JsonPropertyName("signature_usual_mark")]
-    public string SignatureUsualMark { get; set; } = string.Empty;
+    // Not added but part of the spec
 
-
-
+    //[JsonPropertyName("gender")]
+    //public string Gender { get; set; } = string.Empty;
+    //[JsonPropertyName("height")]
+    //public string Height { get; set; } = string.Empty;
+    //[JsonPropertyName("weight")]
+    //public string Weight { get; set; } = string.Empty;
+    //[JsonPropertyName("eye_color")]
+    //public string EyeColor { get; set; } = string.Empty;
+    //[JsonPropertyName("hair_color")]
+    //public string HairColor { get; set; } = string.Empty;
+    //[JsonPropertyName("birth_place")]
+    //public string BirthPlace { get; set; } = string.Empty;
+    //[JsonPropertyName("resident_address")]
+    //public string ResidentAddress { get; set; } = string.Empty;
+    //// "type": "image/jpg;base64url",
+    //[JsonPropertyName("portrait")]
+    //public string Portrait { get; set; } = string.Empty;
+    //[JsonPropertyName("portrait_capture_date")]
+    //public string PortraitCaptureDate { get; set; } = string.Empty;
+    //[JsonPropertyName("age_in_years")]
+    //public string AgeInYears { get; set; } = string.Empty;
+    //[JsonPropertyName("age_birth_year")]
+    //public string AgeBirthYear { get; set; } = string.Empty;
+    //[JsonPropertyName("issuing_jurisdiction")]
+    //public string IssuingJurisdiction { get; set; } = string.Empty;
+    //[JsonPropertyName("nationality")]
+    //public string Nationality { get; set; } = string.Empty;
+    //[JsonPropertyName("resident_city")]
+    //public string ResidentCity { get; set; } = string.Empty;
+    //[JsonPropertyName("resident_state")]
+    //public string ResidentState { get; set; } = string.Empty;
+    //[JsonPropertyName("resident_postal_code")]
+    //public string ResidentPostalCode { get; set; } = string.Empty;
+    //[JsonPropertyName("name_national_character")]
+    //public string NameNationalCharacter { get; set; } = string.Empty;
+    //[JsonPropertyName("signature_usual_mark")]
+    //public string SignatureUsualMark { get; set; } = string.Empty;
 }

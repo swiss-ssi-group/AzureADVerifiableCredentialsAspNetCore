@@ -52,15 +52,32 @@ public class IssuerService
 
         var driverLicense = await _driverLicenseService.GetDriverLicense(context.User?.Identity?.Name);
 
-        payload.Claims.Name = $"{driverLicense?.FirstName} {driverLicense?.Name}  {driverLicense?.UserName}";
-        payload.Claims.Details = $"Type: {driverLicense?.LicenseType} IssuedAt: {driverLicense?.IssuedAt:yyyy-MM-dd}";
+        // TODO complete fields
+        payload.Claims.FamilyName = driverLicense!.Name;
+        payload.Claims.GivenName = driverLicense!.FirstName;
+        payload.Claims.BirthDate = $"{driverLicense!.DateOfBirth:yyyy-MM-dd}";
+        payload.Claims.IssueDate = $"{driverLicense!.IssuedAt:yyyy-MM-dd}";
+        payload.Claims.ExpiryDate = string.Empty;
+        // 2 code, defined in ISO 3166-1
+        payload.Claims.IssuingCountry = "CH";
+        payload.Claims.IssuingAuthority = "BE";
+        payload.Claims.DocumentNumber = string.Empty;
+        payload.Claims.AdministrativeNumber = string.Empty;
+        //{
+        //  "codes": [{ "code": "D"}],
+        //  "vehicle_category_code": "D",
+        //  "issue_date": "2019-01-01",
+        //  "expiry_date": "2027-01-01"
+        //}
+        payload.Claims.DrivingPrivileges = driverLicense!.LicenseType;
+        // Distinguishing sign of the issuing country according to 18013-1 annex F NOTE this field is added for purposes of the UN conventions on driving licences
+        payload.Claims.UnDistinguishingSign = "CH";
 
         return payload;
     }
 
     public async Task<(string Token, string Error, string ErrorDescription)> GetAccessToken()
     {
-
         // You can run this sample using ClientSecret or Certificate. The code will differ only when instantiating the IConfidentialClientApplication
         var isUsingClientSecret = _credentialSettings.AppUsesClientSecret(_credentialSettings);
 
