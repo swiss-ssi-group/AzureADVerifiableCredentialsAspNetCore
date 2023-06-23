@@ -56,8 +56,8 @@ public class IssuerService
         payload.Claims.FamilyName = driverLicense!.FamilyName;
         payload.Claims.GivenName = driverLicense!.GivenName;
         payload.Claims.BirthDate = $"{driverLicense!.DateOfBirth:yyyy-MM-dd}";
-        payload.Claims.IssueDate = $"{driverLicense!.IssueDate:yyyy-MM-dd}";
-        payload.Claims.ExpiryDate = $"{driverLicense!.ExpiryDate:yyyy-MM-dd}";
+        payload.Claims.IssueDate = $"{driverLicense!.IssueDate.ToString("s")}";
+        payload.Claims.ExpiryDate = $"{driverLicense!.ExpiryDate.ToString("s")}";
         // 2 code, defined in ISO 3166-1
         payload.Claims.IssuingCountry = driverLicense!.IssuingCountry;
         payload.Claims.IssuingAuthority = driverLicense!.IssuingAuthority;
