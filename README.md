@@ -11,17 +11,13 @@
 
 ## History
 
-2023-06-18 Updated packages
-
-2023-04-28 Updated packages
-
-2023-03-05 Fixed new VC payloads, fixed cache, recreated all VCs, added github actions for Azure deployment
-
-2023-03-03 Updated to .NET 7, Update AAD VC service with all the breaking changes
-
-2022-03-18 Updated code 
-
-2021-11-12 Updated to .NET 6 release
+- 2023-06-23 Update subject model, based on https://github.com/w3c-ccg/vdl-vocab/blob/main/context/v1.jsonld
+- 2023-06-18 Updated packages
+- 2023-04-28 Updated packages
+- 2023-03-05 Fixed new VC payloads, fixed cache, recreated all VCs, added github actions for Azure deployment
+- 2023-03-03 Updated to .NET 7, Update AAD VC service with all the breaking changes
+- 2022-03-18 Updated code 
+- 2021-11-12 Updated to .NET 6 release
 
 ## User secrets Issuer, Verify
 
