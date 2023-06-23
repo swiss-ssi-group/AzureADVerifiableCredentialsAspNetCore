@@ -8,16 +8,16 @@
 <h3>Driver Licenses for @Model.UserName</h3>
 
 <p>
-    <a asp-page="Create" asp-route-id="@Model.UserName">Add New License</a>
+    <a asp-page="Create" asp-route-id="@Model.UserName">Add New Driving License</a>
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th>User Name</th>
+            <th>User Name (Email)</th>
             <th>IssuedAt</th>
-            <th>Name</th>
-            <th>First Name</th>
-            <th>License Type</th>
+            <th>Family Name</th>
+            <th>Given Name</th>
+            <th>Driving Privileges</th>
             <th>Date of Birth</th>
             <th>Issued by</th>
             <th>Valid</th>
@@ -31,7 +31,7 @@
                 @Html.DisplayFor(modelItem => item.UserName)
             </td>
             <td>
-                @item.IssueDate.ToString("MM/dd/yyyy")
+                @item.IssueDate:yyyy-MM-dd
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FamilyName)
@@ -43,7 +43,7 @@
                 @Html.DisplayFor(modelItem => item.DrivingPrivileges)
             </td>
             <td>
-                @item.DateOfBirth.ToString("MM/dd/yyyy")
+                @item.DateOfBirth:yyyy-MM-dd
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Issuedby)
