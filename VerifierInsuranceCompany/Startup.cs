@@ -1,3 +1,4 @@
+using IssuerDrivingLicense;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace VerifierInsuranceCompany;
@@ -21,23 +22,17 @@ public class Startup
         });
 
         services.Configure<CredentialSettings>(Configuration.GetSection("CredentialSettings"));
-
         services.AddHttpClient();
         services.AddDistributedMemoryCache();
-
-        services.Configure<CookiePolicyOptions>(options =>
-        {
-            // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-            options.CheckConsentNeeded = context => false;
-            options.MinimumSameSitePolicy = SameSiteMode.None;
-        });
 
         services.AddRazorPages();
     }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        app.UseSecurityHeaders(SecurityHeadersDefinitions
+           .GetHeaderPolicyCollection(env.IsDevelopment()));
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
@@ -45,7 +40,6 @@ public class Startup
         else
         {
             app.UseExceptionHandler("/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
 
