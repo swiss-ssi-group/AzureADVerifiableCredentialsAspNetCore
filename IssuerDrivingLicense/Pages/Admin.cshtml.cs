@@ -1,23 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using IssuerDrivingLicense.Persistence;
 
-namespace IssuerDrivingLicense
+namespace IssuerDrivingLicense;
+
+public class AdminModel : PageModel
 {
-    public class AdminModel : PageModel
+    private readonly DrivingLicenseDbContext _context;
+
+    public AdminModel(DrivingLicenseDbContext context)
     {
-        private readonly DrivingLicenseDbContext _context;
+        _context = context;
+    }
 
-        public AdminModel(DrivingLicenseDbContext context)
-        {
-            _context = context;
-        }
+    public List<DriverLicense> DriverLicenses { get; set; } = new List<DriverLicense>();
 
-        public List<DriverLicense> DriverLicenses { get; set; } = new List<DriverLicense>();
-
-        public async Task OnGetAsync()
-        {
-            DriverLicenses = await _context.DriverLicenses.ToListAsync();
-        }
+    public async Task OnGetAsync()
+    {
+        DriverLicenses = await _context.DriverLicenses.ToListAsync();
     }
 }

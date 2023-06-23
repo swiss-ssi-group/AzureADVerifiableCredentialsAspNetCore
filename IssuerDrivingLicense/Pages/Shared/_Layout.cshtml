@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var nonce = this.Context.GetNonce();
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -52,9 +55,9 @@
         </div>
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js" nonce="@nonce"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" nonce="@nonce"></script>
+    <script src="~/js/site.js" asp-append-version="true" nonce="@nonce"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
