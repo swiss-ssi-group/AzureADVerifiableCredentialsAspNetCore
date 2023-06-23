@@ -53,10 +53,10 @@ public class IssuerService
         var driverLicense = await _driverLicenseService.GetDriverLicense(context.User?.Identity?.Name);
 
         // TODO complete fields
-        payload.Claims.FamilyName = driverLicense!.Name;
-        payload.Claims.GivenName = driverLicense!.FirstName;
+        payload.Claims.FamilyName = driverLicense!.FamilyName;
+        payload.Claims.GivenName = driverLicense!.GivenName;
         payload.Claims.BirthDate = $"{driverLicense!.DateOfBirth:yyyy-MM-dd}";
-        payload.Claims.IssueDate = $"{driverLicense!.IssuedAt:yyyy-MM-dd}";
+        payload.Claims.IssueDate = $"{driverLicense!.IssueDate:yyyy-MM-dd}";
         payload.Claims.ExpiryDate = string.Empty;
         // 2 code, defined in ISO 3166-1
         payload.Claims.IssuingCountry = "CH";
@@ -69,7 +69,7 @@ public class IssuerService
         //  "issue_date": "2019-01-01",
         //  "expiry_date": "2027-01-01"
         //}
-        payload.Claims.DrivingPrivileges = driverLicense!.LicenseType;
+        payload.Claims.DrivingPrivileges = driverLicense!.DrivingPrivileges;
         // Distinguishing sign of the issuing country according to 18013-1 annex F NOTE this field is added for purposes of the UN conventions on driving licences
         payload.Claims.UnDistinguishingSign = "CH";
 

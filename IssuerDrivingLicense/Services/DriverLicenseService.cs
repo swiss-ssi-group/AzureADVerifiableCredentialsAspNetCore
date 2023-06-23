@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using IssuerDrivingLicense.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,5 +43,16 @@ public class DriverLicenseService
     {
         _drivingLicenseDbContext.DriverLicenses.Update(driverLicense);
         await _drivingLicenseDbContext.SaveChangesAsync();
+    }
+
+    public static string GetRandomString()
+    {
+        var random = $"{GenerateRandom()}{GenerateRandom()}{GenerateRandom()}";
+        return random;
+    }
+
+    private static int GenerateRandom()
+    {
+        return RandomNumberGenerator.GetInt32(100000000, int.MaxValue);
     }
 }

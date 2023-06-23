@@ -63,6 +63,13 @@ This method defines the specifics of the issue request payload. This would need 
 
 [sample](https://github.com/Azure-Samples/active-directory-verifiable-credentials-dotnet)
 
+## Database
+
+```
+Add-Migration "init"
+
+Update-Database
+```
 ## Links
 
 https://docs.microsoft.com/en-us/azure/active-directory/verifiable-credentials/

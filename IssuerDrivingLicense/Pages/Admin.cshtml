@@ -18,10 +18,10 @@
                 @Html.DisplayNameFor(model => model.DriverLicenses[0].UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DriverLicenses[0].LicenseType)
+                @Html.DisplayNameFor(model => model.DriverLicenses[0].DrivingPrivileges)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DriverLicenses[0].IssuedAt)
+                @Html.DisplayNameFor(model => model.DriverLicenses[0].IssueDate)
             </th>
             <th></th>
         </tr>
@@ -34,10 +34,10 @@
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.LicenseType)
+                    @Html.DisplayFor(modelItem => item.DrivingPrivileges)
                 </td>
                 <td>
-                     @Html.DisplayFor(modelItem => item.IssuedAt)
+                     @Html.DisplayFor(modelItem => item.IssueDate)
                 </td>
                 <td>
                     <div class="form-group" style="width:140px">

@@ -34,8 +34,8 @@ public class EditModel : PageModel
         DriverLicense = new UpdateDriverLicense
         {
             Id = driverLicence.Id,
-            FirstName = driverLicence.FirstName,
-            Name = driverLicence.Name,
+            FirstName = driverLicence.GivenName,
+            Name = driverLicence.FamilyName,
             UserName = driverLicence.UserName,
             Valid = driverLicence.Valid
         };
