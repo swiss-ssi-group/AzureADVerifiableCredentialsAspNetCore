@@ -1,6 +1,7 @@
 ﻿@page
 @model VerifierInsuranceCompany.Pages.VerifierModel
 @{
+    var nonce = this.HttpContext.GetNonce();
     ViewData["Title"] = "Verifier";
 }
 
@@ -35,5 +36,5 @@
 
 <div id="pinCodeText" style="display: none"></div>
 
-<script src="qrcode.min.js" ></script>
-<script src="verifier.js" ></script>
+<script src="qrcode.min.js" nonce="@nonce"></script>
+<script src="verifier.js" nonce="@nonce"></script>

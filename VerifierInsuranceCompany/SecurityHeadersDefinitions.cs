@@ -23,7 +23,7 @@ public static class SecurityHeadersDefinitions
                 builder.AddFontSrc().Self();
                 builder.AddBaseUri().Self();
                 builder.AddStyleSrc().Self().UnsafeInline();
-                builder.AddScriptSrc().Self().UnsafeInline();
+                builder.AddScriptSrc().Self().UnsafeInline().WithNonce();
                 builder.AddFrameAncestors().None();
                 //builder.AddCustomDirective("require-trusted-types-for", "'script'");
             })
