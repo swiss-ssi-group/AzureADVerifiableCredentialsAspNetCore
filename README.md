@@ -42,6 +42,16 @@
 
 ```
 
+## Iso18013 Drivers License (mDL) scheme
+
+I would like to base this on a standard scheme, but could not find any.
+
+Found 2 drafts:
+
+https://github.com/w3c-ccg/vdl-vocab/blob/main/context/v1.jsonld
+
+https://w3c-ccg.github.io/vdl-vocab/
+
 ## Local debugging, required for callback
 
 ```
