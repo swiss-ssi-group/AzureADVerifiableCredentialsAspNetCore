@@ -21,8 +21,6 @@
 - 2022-03-18 Updated code 
 - 2021-11-12 Updated to .NET 6 release
 
-## User secrets Issuer, Verify
-
 ## User secrets and issuer/verify configuration
 
 Select the correct endpoint depending to the business of the application.
