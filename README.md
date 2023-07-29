@@ -23,10 +23,15 @@
 
 ## User secrets Issuer, Verify
 
+## User secrets and issuer/verify configuration
+
+Select the correct endpoint depending to the business of the application.
+
 ```
 {
   "CredentialSettings": {
-    "Endpoint": "https://beta.did.msidentity.com/v1.0/{0}/verifiablecredentials/request",
+    "Endpoint": "https://verifiedid.did.msidentity.com/v1.0/verifiableCredentials/createPresentationRequest",
+    //  "Endpoint": "https://verifiedid.did.msidentity.com/v1.0/verifiableCredentials/createIssuanceRequest",
     "VCServiceScope": "bbb94529-53a3-4be5-a069-7eaf2712b826/.default",
     "Instance": "https://login.microsoftonline.com/{0}",
     "TenantId": "YOURTENANTID",
@@ -40,8 +45,8 @@
     "CredentialManifest":  "THE CREDENTIAL URL FROM THE VC PORTAL"
   }
 }
-
 ```
+
 
 ## Iso18013 Drivers License (mDL) scheme
 
